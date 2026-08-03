@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 
 import { UserService } from "./service";
 
+import { ApiResponse } from "../../utils/response";
+
 export class UserController {
   constructor(private readonly service = new UserService()) {}
 
@@ -12,7 +14,7 @@ export class UserController {
   ): Promise<void> => {
     try {
       const users = await this.service.getUsers();
-      res.status(200).json(users);
+      ApiResponse.success(res, users);
     } catch (error) {
       next(error);
     }

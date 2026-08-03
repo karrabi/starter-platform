@@ -5,8 +5,10 @@ export class UserRepository {
     return prisma.user.findMany({
       select: {
         id: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         email: true,
+        isActive: true,
         createdAt: true,
         updatedAt: true,
       },
