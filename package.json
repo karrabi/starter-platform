@@ -1,0 +1,15 @@
+{
+  "name": "starter-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:website": "npm run dev --workspace=website",
+    "dev:api": "npm run dev --workspace=api",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces"
+  }
+}
