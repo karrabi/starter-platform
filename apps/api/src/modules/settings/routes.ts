@@ -14,4 +14,13 @@ router.get("/", authenticate, controller.getAll);
 
 router.put("/", authenticate, validate(updateSettingSchema), controller.update);
 
+router.get("/:group", authenticate, controller.getGroup);
+
+router.put(
+  "/:group",
+  authenticate,
+  validate(updateSettingsSchema),
+  controller.updateGroup,
+);
+
 export default router;

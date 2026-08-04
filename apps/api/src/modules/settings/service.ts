@@ -3,11 +3,11 @@ import { SettingsRepository } from "./repository";
 export class SettingsService {
   constructor(private readonly repository = new SettingsRepository()) {}
 
-  getAll() {
-    return this.repository.getAll();
+  getGroup(key: string) {
+    return this.repository.getGroup(key);
   }
 
-  update(key: string, value: string) {
-    return this.repository.set(key, value);
+  updateGroup(key: string, value: unknown) {
+    return this.repository.updateGroup(key, value);
   }
 }

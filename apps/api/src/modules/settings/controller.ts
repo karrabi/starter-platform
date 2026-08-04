@@ -1,28 +1,22 @@
-import type { NextFunction, Request, Response } from "express";
+getGroup = async (req, res, next) => {
+  try {
+    const result = await this.service.getGroup(req.params.group);
 
-import { ApiResponse } from "../../utils/response";
-import { SettingsService } from "./service";
+    ApiResponse.success(res, result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-export class SettingsController {
-  constructor(private readonly service = new SettingsService()) {}
+updateGroup = async (req, res, next) => {
+  try {
+    const result = await this.service.updateGroup(
+      req.params.group,
+      req.body.value,
+    );
 
-  getAll = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-      const settings = await this.service.getAll();
-
-      ApiResponse.success(res, settings);
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  update = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await this.service.update(req.body.key, req.body.value);
-
-      ApiResponse.success(res, result, "Setting updated");
-    } catch (error) {
-      next(error);
-    }
-  };
-}
+    ApiResponse.success(res, result, "Settings updated");
+  } catch (error) {
+    next(error);
+  }
+};
