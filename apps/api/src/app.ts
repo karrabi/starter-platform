@@ -8,6 +8,7 @@ import { ApiResponse } from "./utils/response";
 import { errorHandler } from "./middlewares/errorHandler";
 
 import authRoutes from "./modules/auth/routes";
+import settingsRoutes from "./modules/settings/routes";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/api/health", (_req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/settings", settingsRoutes);
 
 app.use(errorHandler);
 
