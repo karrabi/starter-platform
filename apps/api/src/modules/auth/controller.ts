@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+import type { AuthRequest } from "../../middlewares/authenticate";
 import { ApiResponse } from "../../utils/response";
 import { AuthService } from "./service";
 
@@ -21,5 +22,9 @@ export class AuthController {
     } catch (error) {
       next(error);
     }
+  };
+
+  me = async (req: AuthRequest, res: Response): Promise<void> => {
+    ApiResponse.success(res, req.user);
   };
 }
