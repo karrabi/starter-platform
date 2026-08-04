@@ -1,17 +1,11 @@
-import { NextFunction, Request, Response } from "express";
-
+import type { ErrorRequestHandler } from "express";
 import { logger } from "../utils/logger";
 
-export function errorHandler(
-  err: Error,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-) {
+export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   logger.error(err);
 
-  return res.status(500).json({
+  res.status(500).json({
     success: false,
-    message: err.message,
+    message: err.message || "Internal Server Error",
   });
-}
+};
