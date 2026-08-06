@@ -59,8 +59,7 @@ model Page {
   slug           String     @unique
   content        Json
   status         PageStatus @default(DRAFT)
-  seoTitle       String?
-  seoDescription String?    @db.Text
+  seo       Json?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 }
@@ -81,31 +80,19 @@ model Media {
 }
 
 model Blog {
-  id             Int         @id @default(autoincrement())
-
-  title          String
-
-  slug           String      @unique
-
-  summary        String?     @db.Text
-
-  content        Json
-
-  status         BlogStatus  @default(DRAFT)
-
-  seoTitle       String?
-
-  seoDescription String?     @db.Text
-
-  publishedAt    DateTime?
-
-  createdAt      DateTime    @default(now())
-
-  updatedAt      DateTime    @updatedAt
+  id          Int        @id @default(autoincrement())
+  title       String
+  slug        String     @unique
+  summary     String?    @db.Text
+  content     Json
+  status      BlogStatus @default(DRAFT)
+  seo         Json?
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   categories BlogCategory[]
-
-  tags BlogTag[]
+  tags       BlogTag[]
 }
 
 model Menu {

@@ -7,8 +7,7 @@ export interface CreatePageData {
   slug: string;
   content: Prisma.InputJsonValue;
   status: PageStatus;
-  seoTitle?: string;
-  seoDescription?: string;
+  seo?: Prisma.InputJsonValue;
 }
 
 export interface UpdatePageData {
@@ -16,8 +15,7 @@ export interface UpdatePageData {
   slug?: string;
   content?: Prisma.InputJsonValue;
   status?: PageStatus;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  seo?: Prisma.InputJsonValue;
 }
 
 export class PagesRepository {

@@ -1,8 +1,10 @@
 import { z } from "zod";
 
+import { seoSchema } from "../../schemas/seo";
+
 const pageStatusSchema = z.enum(["DRAFT", "PUBLISHED"]);
 
-export const createPageSchema = z.object({
+const basePageSchema = z.object({
   title: z.string().trim().min(2).max(200),
 
   slug: z
@@ -19,12 +21,12 @@ export const createPageSchema = z.object({
 
   status: pageStatusSchema.default("DRAFT"),
 
-  seoTitle: z.string().trim().max(200).optional(),
-
-  seoDescription: z.string().trim().max(500).optional(),
+  seo: seoSchema.nullable().optional(),
 });
 
-export const updatePageSchema = createPageSchema
+export const createPageSchema = basePageSchema;
+
+export const updatePageSchema = basePageSchema
   .partial()
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",

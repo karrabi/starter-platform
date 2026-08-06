@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const createBlogSchema = z.object({
+import { seoSchema } from "../../schemas/seo";
+
+const baseBlogSchema = z.object({
   title: z.string().trim().min(2).max(255),
 
   slug: z
@@ -8,7 +10,10 @@ export const createBlogSchema = z.object({
     .trim()
     .min(2)
     .max(255)
-    .regex(/^[a-z0-9-]+$/),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug must contain lowercase letters, numbers, and hyphens only",
+    ),
 
   summary: z.string().trim().nullable().optional(),
 
@@ -16,11 +21,15 @@ export const createBlogSchema = z.object({
 
   status: z.enum(["DRAFT", "PUBLISHED"]),
 
-  seoTitle: z.string().trim().nullable().optional(),
-
-  seoDescription: z.string().trim().nullable().optional(),
+  seo: seoSchema.nullable().optional(),
 
   publishedAt: z.coerce.date().nullable().optional(),
 });
 
-export const updateBlogSchema = createBlogSchema.partial();
+export const createBlogSchema = baseBlogSchema;
+
+export const updateBlogSchema = baseBlogSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });

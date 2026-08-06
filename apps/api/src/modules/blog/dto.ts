@@ -1,4 +1,4 @@
-import type { Prisma, BlogStatus } from "@prisma/client";
+import type { BlogStatus, Prisma } from "@prisma/client";
 
 export interface CreateBlogDto {
   title: string;
@@ -6,8 +6,7 @@ export interface CreateBlogDto {
   summary?: string | null;
   content: Prisma.InputJsonValue;
   status: BlogStatus;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  seo?: Prisma.InputJsonValue;
   publishedAt?: Date | null;
 }
 
@@ -17,7 +16,6 @@ export interface UpdateBlogDto {
   summary?: string | null;
   content?: Prisma.InputJsonValue;
   status?: BlogStatus;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  seo?: Prisma.InputJsonValue;
   publishedAt?: Date | null;
 }

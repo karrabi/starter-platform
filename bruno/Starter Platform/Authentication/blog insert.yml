@@ -13,13 +13,27 @@ http:
     type: json
     data: |-
       {
-        "title": "First Blog",
-        "slug": "first-blog",
-        "summary": "First post",
+        "title": "Printing Guide",
+        "slug": "printing-guide",
+        "summary": "A practical printing guide",
         "content": {
+          "heroImage": 1,
+          "gallery": [2, 3],
           "blocks": []
         },
-        "status": "PUBLISHED"
+        "status": "PUBLISHED",
+        "seo": {
+          "title": "Complete Printing Guide",
+          "description": "Learn the main concepts of professional printing.",
+          "keywords": [
+            "printing",
+            "design",
+            "business card"
+          ],
+          "canonicalUrl": "https://example.com/blog/printing-guide",
+          "robots": "index,follow",
+          "ogImageId": 1
+        }
       }
   auth: inherit
 
