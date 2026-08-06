@@ -102,6 +102,8 @@ model Blog {
   createdAt      DateTime    @default(now())
 
   updatedAt      DateTime    @updatedAt
+
+  categories BlogCategory[]
 }
 
 model Menu {
@@ -170,5 +172,21 @@ model Category {
 
   updatedAt   DateTime  @updatedAt
 
+  blogs BlogCategory[]
+
   @@unique([slug, type])
+}
+
+model BlogCategory {
+  blogId     Int
+  categoryId Int
+
+  blog        Blog      @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime  @default(now())
+
+  @@id([blogId, categoryId])
+
+  @@index([categoryId])
 }

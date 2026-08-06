@@ -4,17 +4,14 @@ info:
   seq: 27
 
 http:
-  method: PUT
+  method: DELETE
   url: "{{BASE_URL}}/api/categories/1"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
     type: json
-    data: |-
-      {
-        "sortOrder": 1
-      }
+    data: ""
   auth: inherit
 
 settings:

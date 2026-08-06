@@ -15,21 +15,11 @@ http:
       {
         "title": "First Blog",
         "slug": "first-blog",
-        "summary": "This is the first blog",
+        "summary": "First post",
         "content": {
-          "heroImage": 1,
-          "gallery": [2, 3],
-          "blocks": [
-            {
-              "type": "paragraph",
-              "text": "Hello World"
-            }
-          ]
+          "blocks": []
         },
-        "status": "PUBLISHED",
-        "seoTitle": "First Blog",
-        "seoDescription": "First blog description",
-        "publishedAt": "2026-08-07T10:00:00.000Z"
+        "status": "PUBLISHED"
       }
   auth: inherit
 

@@ -1,11 +1,11 @@
 info:
-  name: category add
+  name: blog-category add
   type: http
-  seq: 23
+  seq: 28
 
 http:
   method: POST
-  url: "{{BASE_URL}}/api/categories"
+  url: "{{BASE_URL}}/api/blogs/2/categories"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
@@ -13,9 +13,7 @@ http:
     type: json
     data: |-
       {
-        "name": "Programming",
-        "slug": "programming",
-        "type": "PRODUCT"
+        "categoryId": 3
       }
   auth: inherit
 
