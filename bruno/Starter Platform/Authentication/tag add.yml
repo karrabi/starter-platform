@@ -1,11 +1,11 @@
 info:
-  name: blog-category delete
+  name: tag add
   type: http
-  seq: 30
+  seq: 31
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/api/blogs/2/categories/2"
+  method: POST
+  url: "{{BASE_URL}}/api/tags"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
@@ -13,7 +13,9 @@ http:
     type: json
     data: |-
       {
-        "categoryId": 2
+        "name": "React",
+        "slug": "react",
+        "type": "BLOG"
       }
   auth: inherit
 

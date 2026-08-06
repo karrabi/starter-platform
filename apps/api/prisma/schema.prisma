@@ -104,6 +104,8 @@ model Blog {
   updatedAt      DateTime    @updatedAt
 
   categories BlogCategory[]
+
+  tags BlogTag[]
 }
 
 model Menu {
@@ -189,4 +191,38 @@ model BlogCategory {
   @@id([blogId, categoryId])
 
   @@index([categoryId])
+}
+
+enum TagType {
+  BLOG
+  PRODUCT
+  PORTFOLIO
+  SERVICE
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  slug      String
+  type      TagType
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blogs BlogTag[]
+
+  @@unique([slug, type])
+}
+
+model BlogTag {
+  blogId Int
+  tagId  Int
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([blogId, tagId])
+  @@index([tagId])
 }

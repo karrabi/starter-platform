@@ -1,20 +1,17 @@
 info:
-  name: blog-category delete
+  name: blog-tag get
   type: http
-  seq: 30
+  seq: 33
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/api/blogs/2/categories/2"
+  method: GET
+  url: "{{BASE_URL}}/api/blogs/2/tags"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
     type: json
-    data: |-
-      {
-        "categoryId": 2
-      }
+    data: ""
   auth: inherit
 
 settings:
