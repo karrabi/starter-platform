@@ -1,17 +1,21 @@
 info:
-  name: blog delete
+  name: mennu insert
   type: http
-  seq: 15
+  seq: 16
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/api/blog/1"
+  method: POST
+  url: "{{BASE_URL}}/api/navigation"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
     type: json
-    data: ""
+    data: |-
+      {
+        "name": "header",
+        "description": "Main website header menu"
+      }
   auth: inherit
 
 settings:

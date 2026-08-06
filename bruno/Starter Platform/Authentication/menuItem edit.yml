@@ -1,17 +1,20 @@
 info:
-  name: blog delete
+  name: menuItem edit
   type: http
-  seq: 15
+  seq: 21
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/api/blog/1"
+  method: PUT
+  url: "{{BASE_URL}}/api/navigation/items/2"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
     type: json
-    data: ""
+    data: |-
+      {
+        "title": "Our Products"
+      }
   auth: inherit
 
 settings:

@@ -97,3 +97,43 @@ model Blog {
   updatedAt      DateTime    @updatedAt
 }
 
+model Menu {
+  id          Int      @id @default(autoincrement())
+
+  name        String   @unique
+  description String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items MenuItem[]
+}
+
+model MenuItem {
+  id         Int      @id @default(autoincrement())
+
+  menuId     Int
+  menu       Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+
+  title      String
+
+  url        String
+
+  icon       String?
+
+  parentId   Int?
+
+  parent     MenuItem?  @relation("MenuTree", fields: [parentId], references: [id])
+
+  children   MenuItem[] @relation("MenuTree")
+
+  sortOrder  Int       @default(0)
+
+  target     String?   @default("_self")
+
+  isVisible  Boolean   @default(true)
+
+  createdAt  DateTime  @default(now())
+
+  updatedAt  DateTime  @updatedAt
+}
