@@ -1,0 +1,39 @@
+import type { CreateProductDto, UpdateProductDto } from "./dto";
+
+import { ProductRepository } from "./repository";
+
+export class ProductService {
+  constructor(private readonly repository = new ProductRepository()) {}
+
+  getAll() {
+    return this.repository.findAll();
+  }
+
+  getPublicBySlug(slug: string) {
+    return this.repository.findActiveBySlug(slug);
+  }
+
+  create(data: CreateProductDto) {
+    return this.repository.create(data);
+  }
+
+  async update(id: number, data: UpdateProductDto) {
+    const product = await this.repository.findById(id);
+
+    if (!product) {
+      return null;
+    }
+
+    return this.repository.update(id, data);
+  }
+
+  async delete(id: number) {
+    const product = await this.repository.findById(id);
+
+    if (!product) {
+      return null;
+    }
+
+    return this.repository.delete(id);
+  }
+}

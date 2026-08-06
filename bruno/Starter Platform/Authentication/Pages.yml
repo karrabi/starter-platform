@@ -17,11 +17,17 @@ http:
         "slug": "about-us",
         "content": {
           "heading": "About Us",
-          "body": "This is the about page."
+          "body": "Company information"
         },
         "status": "PUBLISHED",
-        "seoTitle": "About Our Company",
-        "seoDescription": "Learn more about our company."
+        "seo": {
+          "title": "About Our Printing Company",
+          "description": "Learn more about our printing services.",
+          "keywords": [
+            "printing company",
+            "printing services"
+          ]
+        }
       }
   auth: inherit
 

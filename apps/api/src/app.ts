@@ -18,6 +18,7 @@ import categoryRoutes from "./modules/category/routes";
 import blogCategoryRoutes from "./modules/blog-category/routes";
 import tagRoutes from "./modules/tag/routes";
 import blogTagRoutes from "./modules/blog-tag/routes";
+import productRoutes from "./modules/product/routes";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/blogs", blogCategoryRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/blogs", blogTagRoutes);
+app.use("/api/products", productRoutes);
 
 app.use(errorHandler);
 

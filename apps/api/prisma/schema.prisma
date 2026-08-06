@@ -213,3 +213,31 @@ model BlogTag {
   @@id([blogId, tagId])
   @@index([tagId])
 }
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model Product {
+  id               Int      @id @default(autoincrement())
+
+  name             String
+
+  slug             String   @unique
+
+  shortDescription String?
+
+  description      Json
+
+  seo              Json?
+
+  status           ProductStatus @default(DRAFT)
+
+  featured         Boolean @default(false)
+
+  createdAt        DateTime @default(now())
+
+  updatedAt        DateTime @updatedAt
+}
