@@ -1,11 +1,11 @@
 info:
-  name: menuItem delete
+  name: category add
   type: http
-  seq: 22
+  seq: 23
 
 http:
-  method: DELETE
-  url: "{{BASE_URL}}/api/navigation/1"
+  method: POST
+  url: "{{BASE_URL}}/api/categories"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
@@ -13,7 +13,10 @@ http:
     type: json
     data: |-
       {
-        "title": "Our Products"
+        "name": "Programming",
+        "slug": "programming",
+        "type": "BLOG",
+        "description": "Programming articles"
       }
   auth: inherit
 

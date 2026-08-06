@@ -46,6 +46,13 @@ enum BlogStatus {
   PUBLISHED
 }
 
+enum CategoryType {
+  BLOG
+  PRODUCT
+ PORTFOLIO
+  SERVICE
+}
+
 model Page {
   id             Int        @id @default(autoincrement())
   title          String
@@ -136,4 +143,32 @@ model MenuItem {
   createdAt  DateTime  @default(now())
 
   updatedAt  DateTime  @updatedAt
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+
+  name        String
+
+  slug        String
+
+  type        CategoryType
+
+  description String?  @db.Text
+
+  parentId    Int?
+
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+
+  children    Category[] @relation("CategoryTree")
+
+  sortOrder   Int       @default(0)
+
+  isActive    Boolean   @default(true)
+
+  createdAt   DateTime  @default(now())
+
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([slug, type])
 }
