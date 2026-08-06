@@ -12,6 +12,7 @@ import authRoutes from "./modules/auth/routes";
 import settingsRoutes from "./modules/settings/routes";
 import pagesRoutes from "./modules/pages/routes";
 import mediaRoutes from "./modules/media/routes";
+import blogRoutes from "./modules/blog/routes";
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/pages", pagesRoutes);
 app.use("/api/media", mediaRoutes);
+app.use("/api/blog", blogRoutes);
 
 app.use(errorHandler);
 

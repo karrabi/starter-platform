@@ -1,0 +1,40 @@
+info:
+  name: blog insert
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/blog"
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
+  body:
+    type: json
+    data: |-
+      {
+        "title": "First Blog",
+        "slug": "first-blog",
+        "summary": "This is the first blog",
+        "content": {
+          "heroImage": 1,
+          "gallery": [2, 3],
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Hello World"
+            }
+          ]
+        },
+        "status": "PUBLISHED",
+        "seoTitle": "First Blog",
+        "seoDescription": "First blog description",
+        "publishedAt": "2026-08-07T10:00:00.000Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

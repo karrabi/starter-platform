@@ -21,8 +21,8 @@ model User {
 }
 
 model Role {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
   description String?
 
   users User[]
@@ -41,29 +41,59 @@ enum PageStatus {
   PUBLISHED
 }
 
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model Page {
-  id              Int        @id @default(autoincrement())
-  title           String
-  slug            String     @unique
-  content         Json
-  status          PageStatus @default(DRAFT)
-  seoTitle        String?
-  seoDescription  String?    @db.Text
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id             Int        @id @default(autoincrement())
+  title          String
+  slug           String     @unique
+  content        Json
+  status         PageStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?    @db.Text
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 }
 
 model Media {
-  id            Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  fileName      String
-  originalName  String
-  mimeType      String
-  extension     String
+  fileName     String
+  originalName String
+  mimeType     String
+  extension    String
 
-  size          Int
+  size Int
 
-  path          String
+  path String
 
-  createdAt     DateTime @default(now())
+  createdAt DateTime @default(now())
 }
+
+model Blog {
+  id             Int         @id @default(autoincrement())
+
+  title          String
+
+  slug           String      @unique
+
+  summary        String?     @db.Text
+
+  content        Json
+
+  status         BlogStatus  @default(DRAFT)
+
+  seoTitle       String?
+
+  seoDescription String?     @db.Text
+
+  publishedAt    DateTime?
+
+  createdAt      DateTime    @default(now())
+
+  updatedAt      DateTime    @updatedAt
+}
+
