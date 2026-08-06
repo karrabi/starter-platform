@@ -4,15 +4,11 @@ import { authenticate } from "../../middlewares/authenticate";
 import { validate } from "../../middlewares/validate";
 
 import { SettingsController } from "./controller";
-import { updateSettingSchema } from "./schema";
+import { updateSettingsSchema } from "./schema";
 
 const router = Router();
 
 const controller = new SettingsController();
-
-router.get("/", authenticate, controller.getAll);
-
-router.put("/", authenticate, validate(updateSettingSchema), controller.update);
 
 router.get("/:group", authenticate, controller.getGroup);
 

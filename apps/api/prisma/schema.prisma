@@ -35,3 +35,20 @@ model Setting {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Page {
+  id              Int        @id @default(autoincrement())
+  title           String
+  slug            String     @unique
+  content         Json
+  status          PageStatus @default(DRAFT)
+  seoTitle        String?
+  seoDescription  String?    @db.Text
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}

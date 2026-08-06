@@ -1,22 +1,41 @@
-getGroup = async (req, res, next) => {
-  try {
-    const result = await this.service.getGroup(req.params.group);
+import type { NextFunction, Request, Response } from "express";
 
-    ApiResponse.success(res, result);
-  } catch (error) {
-    next(error);
-  }
-};
+import { ApiResponse } from "../../utils/response";
+import { SettingsService } from "./service";
 
-updateGroup = async (req, res, next) => {
-  try {
-    const result = await this.service.updateGroup(
-      req.params.group,
-      req.body.value,
-    );
+export class SettingsController {
+  constructor(private readonly service = new SettingsService()) {}
 
-    ApiResponse.success(res, result, "Settings updated");
-  } catch (error) {
-    next(error);
-  }
-};
+  getGroup = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const group = String(req.params.group);
+
+      const result = await this.service.getGroup(group);
+
+      ApiResponse.success(res, result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateGroup = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const group = String(req.params.group);
+      const value = req.body.value;
+
+      const result = await this.service.updateGroup(group, value);
+
+      ApiResponse.success(res, result, "Settings updated");
+    } catch (error) {
+      next(error);
+    }
+  };
+}

@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client";
+
 import prisma from "../../database/prisma";
 
 export class SettingsRepository {
@@ -9,7 +11,7 @@ export class SettingsRepository {
     });
   }
 
-  updateGroup(key: string, value: unknown) {
+  updateGroup(key: string, value: Prisma.InputJsonValue) {
     return prisma.setting.upsert({
       where: {
         key,
