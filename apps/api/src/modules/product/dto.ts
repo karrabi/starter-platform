@@ -5,6 +5,7 @@ export interface CreateProductDto {
   slug: string;
   shortDescription?: string | null;
   description: Prisma.InputJsonValue;
+  gallery?: Prisma.InputJsonValue;
   seo?: Prisma.InputJsonValue;
   status: ProductStatus;
   featured?: boolean;
@@ -15,6 +16,7 @@ export interface UpdateProductDto {
   slug?: string;
   shortDescription?: string | null;
   description?: Prisma.InputJsonValue;
+  gallery?: Prisma.InputJsonValue;
   seo?: Prisma.InputJsonValue;
   status?: ProductStatus;
   featured?: boolean;

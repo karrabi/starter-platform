@@ -20,6 +20,8 @@ const baseProductSchema = z.object({
 
   description: z.record(z.string(), z.unknown()),
 
+  gallery: z.array(z.number().int().positive()).optional(),
+
   seo: seoSchema.optional(),
 
   status: z.nativeEnum(ProductStatus).default(ProductStatus.DRAFT),
