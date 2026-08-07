@@ -33,4 +33,5 @@ export interface CreateProductRequest {
   description: Record<string, unknown>;
   status: ProductStatus;
   featured: boolean;
+  gallery: number[];
 }

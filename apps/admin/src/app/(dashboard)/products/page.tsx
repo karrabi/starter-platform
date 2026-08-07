@@ -17,6 +17,8 @@ import { Trash2 } from "lucide-react";
 
 import { useDeleteProduct } from "@/hooks/use-delete-product";
 
+import { config } from "@/config/config";
+
 export default function ProductsPage() {
   const { data = [], isLoading } = useProducts();
   const deleteMutation = useDeleteProduct();
@@ -52,6 +54,26 @@ export default function ProductsPage() {
       <DataTable
         rows={data}
         columns={[
+          {
+            key: "image",
+            title: "Image",
+            render: (product) => {
+              if (
+                !Array.isArray(product.gallery) ||
+                product.gallery.length === 0
+              ) {
+                return <div className="h-14 w-14 rounded border bg-gray-100" />;
+              }
+
+              return (
+                <img
+                  src={`${config.mediaBaseUrl}/uploads/images/${product.gallery[0]}`}
+                  alt={product.name}
+                  className="h-14 w-14 rounded border object-cover"
+                />
+              );
+            },
+          },
           {
             key: "name",
             title: "Name",

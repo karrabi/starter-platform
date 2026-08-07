@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 type Column<T> = {
-  key: keyof T | "actions";
+  key: string;
   title: string;
   render?: (row: T) => ReactNode;
 };

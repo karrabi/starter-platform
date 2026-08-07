@@ -53,21 +53,18 @@ export default function EditProductPage() {
         isSubmitting={updateMutation.isPending}
         initialValues={{
           name: product.name,
-
           slug: product.slug,
-
           shortDescription: product.shortDescription ?? "",
-
           description:
-            typeof product.description === "object" &&
-            product.description &&
-            "body" in product.description
-              ? String(product.description.body)
+            typeof product.description === "object"
+              ? ((product.description as any).body ?? "")
               : "",
-
           status: product.status,
-
           featured: product.featured,
+
+          gallery: Array.isArray(product.gallery)
+            ? (product.gallery as number[])
+            : [],
         }}
         onSubmit={handleUpdate}
       />

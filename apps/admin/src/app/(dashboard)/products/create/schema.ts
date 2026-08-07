@@ -20,6 +20,8 @@ export const createProductSchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
 
   featured: z.boolean(),
+
+  gallery: z.array(z.number()),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;

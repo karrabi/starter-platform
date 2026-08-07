@@ -3,12 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { CheckboxField } from "@/components/forms/checkbox-field";
 import { SelectField } from "@/components/forms/select-field";
 import { TextArea } from "@/components/forms/text-area";
 import { TextField } from "@/components/forms/text-field";
+import { MediaPicker } from "@/components/media";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -24,11 +25,8 @@ import {
 
 type ProductFormProps = {
   mode: "create" | "edit";
-
   initialValues?: Partial<CreateProductFormData>;
-
   isSubmitting: boolean;
-
   onSubmit: (data: CreateProductRequest) => Promise<void>;
 };
 
@@ -43,6 +41,7 @@ export function ProductForm({
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors },
   } = useForm<CreateProductFormData>({
@@ -50,58 +49,44 @@ export function ProductForm({
 
     defaultValues: {
       name: "",
-
       slug: "",
-
       shortDescription: "",
-
       description: "",
-
       status: "DRAFT",
-
       featured: false,
-
+      gallery: [],
       ...initialValues,
     },
   });
 
   useEffect(() => {
-    if (initialValues) {
-      reset({
-        name: initialValues.name ?? "",
+    if (!initialValues) return;
 
-        slug: initialValues.slug ?? "",
-
-        shortDescription: initialValues.shortDescription ?? "",
-
-        description: initialValues.description ?? "",
-
-        status: initialValues.status ?? "DRAFT",
-
-        featured: initialValues.featured ?? false,
-      });
-    }
+    reset({
+      name: initialValues.name ?? "",
+      slug: initialValues.slug ?? "",
+      shortDescription: initialValues.shortDescription ?? "",
+      description: initialValues.description ?? "",
+      status: initialValues.status ?? "DRAFT",
+      featured: initialValues.featured ?? false,
+      gallery: initialValues.gallery ?? [],
+    });
   }, [initialValues, reset]);
 
   async function submit(data: CreateProductFormData) {
-    console.log("FORM SUBMIT");
-    console.log(data);
     await onSubmit({
       name: data.name,
-
       slug: data.slug,
-
       shortDescription: data.shortDescription || null,
-
       description: {
         body: data.description,
       },
-
       status: data.status,
-
       featured: data.featured,
+      gallery: data.gallery,
     });
   }
+
   return (
     <Card>
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
@@ -150,6 +135,22 @@ export function ProductForm({
         />
 
         <CheckboxField label="Featured Product" {...register("featured")} />
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Gallery</label>
+
+          <Controller
+            control={control}
+            name="gallery"
+            render={({ field }) => (
+              <MediaPicker
+                multiple
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </div>
 
         <div className="flex gap-3">
           <Button type="submit" disabled={isSubmitting}>
