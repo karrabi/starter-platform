@@ -3,6 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { tokenStorage } from "@/lib/auth/token";
+
 import { AuthService } from "@/services/auth.service";
 
 import type { LoginRequest, LoginResponse } from "@/types/auth";
@@ -14,7 +15,7 @@ export function useLogin() {
     mutationFn: AuthService.login,
 
     onSuccess(response) {
-      tokenStorage.set(response.data.token);
+      tokenStorage.set(response.data.data.token);
     },
   });
 }

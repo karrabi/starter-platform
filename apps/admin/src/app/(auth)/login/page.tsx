@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { routes } from "@/config/routes";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -29,7 +30,7 @@ export default function LoginPage() {
     try {
       await loginMutation.mutateAsync(data);
 
-      router.push("/");
+      router.replace(routes.dashboard);
     } catch (error) {
       console.error(error);
     }

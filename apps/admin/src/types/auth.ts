@@ -1,8 +1,3 @@
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
 export interface UserDto {
   id: number;
   firstName: string;
@@ -10,7 +5,18 @@ export interface UserDto {
   email: string;
 }
 
-export interface LoginResponse {
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
   token: string;
   user: UserDto;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  data: LoginData;
 }

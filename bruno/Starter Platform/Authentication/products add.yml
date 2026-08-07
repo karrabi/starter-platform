@@ -13,8 +13,8 @@ http:
     type: json
     data: |-
       {
-        "name": "Business Card",
-        "slug": "business-card",
+        "name": "Business Card2",
+        "slug": "business-card2",
         "shortDescription": "Professional business card printing",
         "description": {
           "heroImage": 1,
