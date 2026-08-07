@@ -20,6 +20,8 @@ router.post(
   controller.create,
 );
 
+router.get("/:id", authenticate, controller.getById);
+
 router.put(
   "/:id",
   authenticate,

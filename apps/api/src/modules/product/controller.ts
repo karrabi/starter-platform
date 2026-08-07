@@ -28,6 +28,25 @@ export class ProductController {
     }
   };
 
+  getById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const product = await this.service.getById(Number(req.params.id));
+
+      if (!product) {
+        ApiResponse.error(res, "Product not found", 404);
+        return;
+      }
+
+      ApiResponse.success(res, product);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getPublicBySlug = async (
     req: Request<SlugParams>,
     res: Response,

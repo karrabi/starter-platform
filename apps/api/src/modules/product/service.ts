@@ -17,6 +17,10 @@ export class ProductService {
     return this.repository.create(data);
   }
 
+  async getById(id: number) {
+    return this.repository.findById(id);
+  }
+
   async update(id: number, data: UpdateProductDto) {
     const product = await this.repository.findById(id);
 
