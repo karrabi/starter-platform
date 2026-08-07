@@ -6,8 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { FormField } from "@/components/forms/form-field";
+import { TextField } from "@/components/forms/text-field";
 
 import { useLogin } from "@/hooks/use-login";
 
@@ -43,13 +42,19 @@ export default function LoginPage() {
           <h1 className="mb-6 text-center text-3xl font-bold">Admin Login</h1>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <FormField label="Email" error={errors.email?.message}>
-              <Input type="email" {...register("email")} />
-            </FormField>
+            <TextField
+              label="Email"
+              type="email"
+              error={errors.email?.message}
+              {...register("email")}
+            />
 
-            <FormField label="Password" error={errors.password?.message}>
-              <Input type="password" {...register("password")} />
-            </FormField>
+            <TextField
+              label="Password"
+              type="password"
+              error={errors.password?.message}
+              {...register("password")}
+            />
 
             <Button
               type="submit"
