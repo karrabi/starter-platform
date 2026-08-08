@@ -62,8 +62,11 @@ export default function EditProductPage() {
           status: product.status,
           featured: product.featured,
 
-          gallery: Array.isArray(product.gallery)
-            ? (product.gallery as number[])
+          gallery: Array.isArray(product.media)
+            ? product.media
+                .slice()
+                .sort((a, b) => a.position - b.position)
+                .map((item) => item.mediaId)
             : [],
         }}
         onSubmit={handleUpdate}

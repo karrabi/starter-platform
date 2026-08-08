@@ -77,6 +77,7 @@ model Media {
   path String
 
   createdAt DateTime @default(now())
+  products ProductMedia[]
 }
 
 model Blog {
@@ -243,7 +244,8 @@ model Product {
 
   categories       ProductCategory[]
   tags             ProductTag[]
-  gallery Json?
+
+  media ProductMedia[]
 }
 
 model ProductCategory {
@@ -270,4 +272,21 @@ model ProductTag {
 
   @@id([productId, tagId])
   @@index([tagId])
+}
+
+model ProductMedia {
+  id Int @id @default(autoincrement())
+
+  productId Int
+  mediaId   Int
+
+  position Int     @default(0)
+  featured Boolean @default(false)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  media   Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, mediaId])
+  @@index([productId])
+  @@index([mediaId])
 }

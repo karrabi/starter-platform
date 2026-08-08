@@ -1,12 +1,32 @@
 export type ProductStatus = "DRAFT" | "ACTIVE" | "ARCHIVED";
 
+export interface ProductMediaFile {
+  id: number;
+  fileName: string;
+  originalName: string;
+  mimeType: string;
+  extension: string;
+  size: number;
+  path: string;
+  createdAt: string;
+}
+
+export interface ProductMedia {
+  id: number;
+  productId: number;
+  mediaId: number;
+  position: number;
+  featured: boolean;
+  media: ProductMediaFile;
+}
+
 export interface Product {
   id: number;
   name: string;
   slug: string;
   shortDescription: string | null;
   description: Record<string, unknown>;
-  gallery?: number[] | null;
+  media: ProductMedia[];
   seo?: Record<string, unknown> | null;
   featured: boolean;
   status: ProductStatus;

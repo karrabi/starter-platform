@@ -8,6 +8,16 @@ export class ProductRepository {
       orderBy: {
         updatedAt: "desc",
       },
+      include: {
+        media: {
+          orderBy: {
+            position: "asc",
+          },
+          include: {
+            media: true,
+          },
+        },
+      },
     });
   }
 
@@ -15,6 +25,16 @@ export class ProductRepository {
     return prisma.product.findUnique({
       where: {
         id,
+      },
+      include: {
+        media: {
+          orderBy: {
+            position: "asc",
+          },
+          include: {
+            media: true,
+          },
+        },
       },
     });
   }
@@ -37,17 +57,84 @@ export class ProductRepository {
   }
 
   create(data: CreateProductDto) {
+    const { gallery, ...productData } = data;
+
+    const mediaIds = Array.isArray(gallery)
+      ? gallery.filter((value): value is number => typeof value === "number")
+      : [];
+
     return prisma.product.create({
-      data,
+      data: {
+        ...productData,
+
+        media: {
+          create: mediaIds.map((mediaId, position) => ({
+            mediaId,
+            position,
+            featured: position === 0,
+          })),
+        },
+      },
+
+      include: {
+        media: {
+          orderBy: {
+            position: "asc",
+          },
+          include: {
+            media: true,
+          },
+        },
+      },
     });
   }
 
-  update(id: number, data: UpdateProductDto) {
-    return prisma.product.update({
-      where: {
-        id,
-      },
-      data,
+  async update(id: number, data: UpdateProductDto) {
+    const { gallery, ...productData } = data;
+
+    const mediaIds = Array.isArray(gallery)
+      ? gallery.filter((value): value is number => typeof value === "number")
+      : undefined;
+
+    return prisma.$transaction(async (tx) => {
+      if (mediaIds !== undefined) {
+        await tx.productMedia.deleteMany({
+          where: {
+            productId: id,
+          },
+        });
+      }
+
+      return tx.product.update({
+        where: {
+          id,
+        },
+
+        data: {
+          ...productData,
+
+          ...(mediaIds !== undefined && {
+            media: {
+              create: mediaIds.map((mediaId, position) => ({
+                mediaId,
+                position,
+                featured: position === 0,
+              })),
+            },
+          }),
+        },
+
+        include: {
+          media: {
+            orderBy: {
+              position: "asc",
+            },
+            include: {
+              media: true,
+            },
+          },
+        },
+      });
     });
   }
 

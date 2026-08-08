@@ -58,18 +58,21 @@ export default function ProductsPage() {
             key: "image",
             title: "Image",
             render: (product) => {
-              if (
-                !Array.isArray(product.gallery) ||
-                product.gallery.length === 0
-              ) {
-                return <div className="h-14 w-14 rounded border bg-gray-100" />;
+              const featuredMedia =
+                product.media?.find((item) => item.featured) ??
+                product.media?.[0];
+
+              if (!featuredMedia?.media?.path) {
+                return (
+                  <div className="h-14 w-14 rounded-lg border bg-gray-100" />
+                );
               }
 
               return (
                 <img
-                  src={`${config.mediaBaseUrl}/uploads/images/${product.gallery[0]}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, "")}${featuredMedia.media.path}`}
                   alt={product.name}
-                  className="h-14 w-14 rounded border object-cover"
+                  className="h-14 w-14 rounded-lg border object-contain"
                 />
               );
             },
