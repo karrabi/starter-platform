@@ -22,6 +22,11 @@ export class ProductRepository {
             category: true,
           },
         },
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
       },
     });
   }
@@ -43,6 +48,11 @@ export class ProductRepository {
         categories: {
           include: {
             category: true,
+          },
+        },
+        tags: {
+          include: {
+            tag: true,
           },
         },
       },
@@ -67,7 +77,7 @@ export class ProductRepository {
   }
 
   create(data: CreateProductDto) {
-    const { gallery, categoryIds, ...productData } = data;
+    const { gallery, categoryIds, tagIds, ...productData } = data;
 
     const mediaIds = Array.isArray(gallery)
       ? gallery.filter((value): value is number => typeof value === "number")
@@ -89,6 +99,11 @@ export class ProductRepository {
             categoryId,
           })),
         },
+        tags: {
+          create: (tagIds ?? []).map((tagId) => ({
+            tagId,
+          })),
+        },
       },
 
       include: {
@@ -105,12 +120,17 @@ export class ProductRepository {
             category: true,
           },
         },
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
       },
     });
   }
 
   async update(id: number, data: UpdateProductDto) {
-    const { gallery, categoryIds, ...productData } = data;
+    const { gallery, categoryIds, tagIds, ...productData } = data;
 
     const mediaIds = Array.isArray(gallery)
       ? gallery.filter((value): value is number => typeof value === "number")
@@ -132,7 +152,13 @@ export class ProductRepository {
           },
         });
       }
-
+      if (tagIds !== undefined) {
+        await tx.productTag.deleteMany({
+          where: {
+            productId: id,
+          },
+        });
+      }
       return tx.product.update({
         where: {
           id,
@@ -158,6 +184,14 @@ export class ProductRepository {
               })),
             },
           }),
+
+          ...(tagIds !== undefined && {
+            tags: {
+              create: tagIds.map((tagId) => ({
+                tagId,
+              })),
+            },
+          }),
         },
 
         include: {
@@ -173,6 +207,12 @@ export class ProductRepository {
           categories: {
             include: {
               category: true,
+            },
+          },
+
+          tags: {
+            include: {
+              tag: true,
             },
           },
         },

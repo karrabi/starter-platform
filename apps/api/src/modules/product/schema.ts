@@ -29,6 +29,7 @@ const baseProductSchema = z.object({
   featured: z.boolean().default(false),
 
   categoryIds: z.array(z.number().int().positive()).optional(),
+  tagIds: z.array(z.number().int().positive()).optional(),
 });
 
 export const createProductSchema = baseProductSchema;

@@ -10,6 +10,7 @@ export interface CreateProductDto {
   status: ProductStatus;
   featured?: boolean;
   categoryIds?: number[];
+  tagIds?: number[];
 }
 
 export interface UpdateProductDto {
@@ -22,4 +23,5 @@ export interface UpdateProductDto {
   status?: ProductStatus;
   featured?: boolean;
   categoryIds?: number[];
+  tagIds?: number[];
 }
