@@ -41,6 +41,15 @@ export default function EditProductPage() {
     router.push(routes.products);
   }
 
+  const seo = product.seo && typeof product.seo === "object" ? product.seo : {};
+
+  const seoTitle = typeof seo.title === "string" ? seo.title : "";
+
+  const seoDescription =
+    typeof seo.description === "string" ? seo.description : "";
+
+  const seoOgImageId = typeof seo.ogImageId === "number" ? seo.ogImageId : null;
+
   return (
     <PageContainer>
       <PageHeader
@@ -74,6 +83,9 @@ export default function EditProductPage() {
           tagIds: Array.isArray(product.tags)
             ? product.tags.map((item) => item.tagId)
             : [],
+          seoTitle,
+          seoDescription,
+          seoOgImageId,
         }}
         onSubmit={handleUpdate}
       />

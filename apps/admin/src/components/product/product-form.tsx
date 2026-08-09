@@ -59,6 +59,9 @@ export function ProductForm({
       gallery: [],
       categoryIds: [],
       tagIds: [],
+      seoTitle: "",
+      seoDescription: "",
+      seoOgImageId: null,
       ...initialValues,
     },
   });
@@ -76,10 +79,26 @@ export function ProductForm({
       gallery: initialValues.gallery ?? [],
       categoryIds: initialValues.categoryIds ?? [],
       tagIds: initialValues.tagIds ?? [],
+      seoTitle: initialValues.seoTitle ?? "",
+      seoDescription: initialValues.seoDescription ?? "",
+      seoOgImageId: initialValues.seoOgImageId ?? null,
     });
   }, [initialValues, reset]);
 
   async function submit(data: CreateProductFormData) {
+    const seo = {
+      ...(data.seoTitle && {
+        title: data.seoTitle,
+      }),
+
+      ...(data.seoDescription && {
+        description: data.seoDescription,
+      }),
+
+      ...(data.seoOgImageId && {
+        ogImageId: data.seoOgImageId,
+      }),
+    };
     await onSubmit({
       name: data.name,
       slug: data.slug,
@@ -92,6 +111,7 @@ export function ProductForm({
       gallery: data.gallery,
       categoryIds: data.categoryIds,
       tagIds: data.tagIds,
+      seo: Object.keys(seo).length > 0 ? seo : undefined,
     });
   }
 
@@ -182,6 +202,45 @@ export function ProductForm({
               />
             )}
           />
+        </div>
+
+        <div className="space-y-4 border-t pt-6">
+          <div>
+            <h3 className="text-base font-semibold">SEO</h3>
+
+            <p className="text-sm text-gray-500">
+              Search engine and social sharing settings
+            </p>
+          </div>
+
+          <TextField
+            label="Meta Title"
+            error={errors.seoTitle?.message}
+            {...register("seoTitle")}
+          />
+
+          <TextArea
+            label="Meta Description"
+            error={errors.seoDescription?.message}
+            {...register("seoDescription")}
+          />
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">OG Image</label>
+
+            <Controller
+              control={control}
+              name="seoOgImageId"
+              render={({ field }) => (
+                <MediaPicker
+                  value={field.value ? [field.value] : []}
+                  onChange={(ids) => {
+                    field.onChange(ids[0] ?? null);
+                  }}
+                />
+              )}
+            />
+          </div>
         </div>
 
         <div className="flex gap-3">

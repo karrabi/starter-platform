@@ -94,4 +94,9 @@ export interface CreateProductRequest {
   gallery: number[];
   categoryIds: number[];
   tagIds: number[];
+  seo?: {
+    title?: string;
+    description?: string;
+    ogImageId?: number;
+  };
 }

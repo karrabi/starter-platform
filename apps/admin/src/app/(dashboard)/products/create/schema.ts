@@ -25,6 +25,10 @@ export const createProductSchema = z.object({
 
   categoryIds: z.array(z.number().int().positive()),
   tagIds: z.array(z.number().int().positive()),
+
+  seoTitle: z.string().trim().max(200).optional(),
+  seoDescription: z.string().trim().max(500).optional(),
+  seoOgImageId: z.number().int().positive().nullable(),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;
