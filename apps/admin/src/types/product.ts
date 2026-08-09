@@ -38,6 +38,24 @@ export interface ProductCategoryRelation {
   createdAt: string;
   category: ProductCategoryItem;
 }
+
+export interface ProductTagItem {
+  id: number;
+  name: string;
+  slug: string;
+  type: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductTagRelation {
+  productId: number;
+  tagId: number;
+  createdAt: string;
+  tag: ProductTagItem;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -51,6 +69,7 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   categories: ProductCategoryRelation[];
+  tags: ProductTagRelation[];
 }
 
 export interface ProductListResponse {
@@ -74,4 +93,5 @@ export interface CreateProductRequest {
   featured: boolean;
   gallery: number[];
   categoryIds: number[];
+  tagIds: number[];
 }

@@ -11,6 +11,7 @@ import { TextArea } from "@/components/forms/text-area";
 import { TextField } from "@/components/forms/text-field";
 import { MediaPicker } from "@/components/media";
 import { CategoryPicker } from "@/components/category/category-picker";
+import { TagPicker } from "@/components/tag/tag-picker";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -57,6 +58,7 @@ export function ProductForm({
       featured: false,
       gallery: [],
       categoryIds: [],
+      tagIds: [],
       ...initialValues,
     },
   });
@@ -73,6 +75,7 @@ export function ProductForm({
       featured: initialValues.featured ?? false,
       gallery: initialValues.gallery ?? [],
       categoryIds: initialValues.categoryIds ?? [],
+      tagIds: initialValues.tagIds ?? [],
     });
   }, [initialValues, reset]);
 
@@ -88,6 +91,7 @@ export function ProductForm({
       featured: data.featured,
       gallery: data.gallery,
       categoryIds: data.categoryIds,
+      tagIds: data.tagIds,
     });
   }
 
@@ -151,6 +155,19 @@ export function ProductForm({
             )}
           />
         </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Tags</label>
+
+          <Controller
+            control={control}
+            name="tagIds"
+            render={({ field }) => (
+              <TagPicker value={field.value} onChange={field.onChange} />
+            )}
+          />
+        </div>
+
         <div className="space-y-2">
           <label className="text-sm font-medium">Gallery</label>
 

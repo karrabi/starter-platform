@@ -71,6 +71,9 @@ export default function EditProductPage() {
           categoryIds: Array.isArray(product.categories)
             ? product.categories.map((item) => item.categoryId)
             : [],
+          tagIds: Array.isArray(product.tags)
+            ? product.tags.map((item) => item.tagId)
+            : [],
         }}
         onSubmit={handleUpdate}
       />

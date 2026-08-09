@@ -24,7 +24,7 @@ export const createProductSchema = z.object({
   gallery: z.array(z.number()),
 
   categoryIds: z.array(z.number().int().positive()),
-  tagIds: z.array(z.number().int().positive()).optional(),
+  tagIds: z.array(z.number().int().positive()),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;
