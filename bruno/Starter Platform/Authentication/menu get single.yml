@@ -1,20 +1,17 @@
 info:
-  name: blog update
+  name: menu get single
   type: http
-  seq: 48
+  seq: 49
 
 http:
-  method: PUT
-  url: "{{BASE_URL}}/api/blog/5"
+  method: GET
+  url: "{{BASE_URL}}/api/navigation/3"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
     type: json
-    data: |-
-      {
-      "status": "PUBLISHED"
-      }
+    data: ""
   auth: inherit
 
 settings:

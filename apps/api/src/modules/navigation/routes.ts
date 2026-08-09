@@ -18,7 +18,7 @@ const controller = new NavigationController();
 router.get("/public/:name", controller.getPublicMenu);
 
 router.get("/", authenticate, controller.getMenus);
-
+router.get("/:id", authenticate, controller.getMenuById);
 router.post(
   "/",
   authenticate,

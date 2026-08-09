@@ -21,6 +21,9 @@ export const routes = {
   tags: "/tags",
 
   navigation: "/navigation",
+  createNavigation: "/navigation/create",
+  editNavigation: (id: number) => `/navigation/${id}/edit`,
+  navigationItems: (id: number) => `/navigation/${id}/items`,
 
   users: "/users",
 

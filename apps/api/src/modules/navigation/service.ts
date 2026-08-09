@@ -59,10 +59,41 @@ export class NavigationService {
       return null;
     }
 
+    if (data.parentId != null) {
+      const parent = await this.repository.findMenuItemById(data.parentId);
+
+      if (!parent || parent.menuId !== menuId) {
+        throw new Error("Parent menu item must belong to the same menu");
+      }
+    }
+
     return this.repository.createMenuItem({
       ...data,
       menuId,
     });
+  }
+
+  private async wouldCreateCycle(
+    itemId: number,
+    parentId: number,
+  ): Promise<boolean> {
+    let currentParentId: number | null = parentId;
+
+    while (currentParentId !== null) {
+      if (currentParentId === itemId) {
+        return true;
+      }
+
+      const parent = await this.repository.findMenuItemById(currentParentId);
+
+      if (!parent) {
+        return false;
+      }
+
+      currentParentId = parent.parentId;
+    }
+
+    return false;
   }
 
   async updateMenuItem(id: number, data: UpdateMenuItemDto) {
@@ -70,6 +101,24 @@ export class NavigationService {
 
     if (!item) {
       return null;
+    }
+
+    if (data.parentId != null) {
+      if (data.parentId === id) {
+        throw new Error("Menu item cannot be its own parent");
+      }
+
+      const parent = await this.repository.findMenuItemById(data.parentId);
+
+      if (!parent || parent.menuId !== item.menuId) {
+        throw new Error("Parent menu item must belong to the same menu");
+      }
+
+      const createsCycle = await this.wouldCreateCycle(id, data.parentId);
+
+      if (createsCycle) {
+        throw new Error("Menu item parent relationship would create a cycle");
+      }
     }
 
     return this.repository.updateMenuItem(id, data);

@@ -15,7 +15,31 @@ export class NavigationController {
       next(error);
     }
   };
+  getMenuById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const id = Number(req.params.id);
 
+      if (!Number.isInteger(id) || id <= 0) {
+        ApiResponse.error(res, "Invalid menu ID", 400);
+        return;
+      }
+
+      const result = await this.service.getMenuById(id);
+
+      if (!result) {
+        ApiResponse.error(res, "Menu not found", 404);
+        return;
+      }
+
+      ApiResponse.success(res, result);
+    } catch (error) {
+      next(error);
+    }
+  };
   getPublicMenu = async (
     req: Request<{ name: string }>,
     res: Response,
