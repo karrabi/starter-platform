@@ -10,6 +10,7 @@ import { SelectField } from "@/components/forms/select-field";
 import { TextArea } from "@/components/forms/text-area";
 import { TextField } from "@/components/forms/text-field";
 import { MediaPicker } from "@/components/media";
+import { CategoryPicker } from "@/components/category/category-picker";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -55,6 +56,7 @@ export function ProductForm({
       status: "DRAFT",
       featured: false,
       gallery: [],
+      categoryIds: [],
       ...initialValues,
     },
   });
@@ -70,6 +72,7 @@ export function ProductForm({
       status: initialValues.status ?? "DRAFT",
       featured: initialValues.featured ?? false,
       gallery: initialValues.gallery ?? [],
+      categoryIds: initialValues.categoryIds ?? [],
     });
   }, [initialValues, reset]);
 
@@ -84,6 +87,7 @@ export function ProductForm({
       status: data.status,
       featured: data.featured,
       gallery: data.gallery,
+      categoryIds: data.categoryIds,
     });
   }
 
@@ -136,6 +140,17 @@ export function ProductForm({
 
         <CheckboxField label="Featured Product" {...register("featured")} />
 
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Categories</label>
+
+          <Controller
+            control={control}
+            name="categoryIds"
+            render={({ field }) => (
+              <CategoryPicker value={field.value} onChange={field.onChange} />
+            )}
+          />
+        </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Gallery</label>
 

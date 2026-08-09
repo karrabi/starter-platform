@@ -19,7 +19,25 @@ export interface ProductMedia {
   featured: boolean;
   media: ProductMediaFile;
 }
+export interface ProductCategoryItem {
+  id: number;
+  name: string;
+  slug: string;
+  type: string;
+  description?: string | null;
+  parentId?: number | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
+export interface ProductCategoryRelation {
+  productId: number;
+  categoryId: number;
+  createdAt: string;
+  category: ProductCategoryItem;
+}
 export interface Product {
   id: number;
   name: string;
@@ -32,6 +50,7 @@ export interface Product {
   status: ProductStatus;
   createdAt: string;
   updatedAt: string;
+  categories: ProductCategoryRelation[];
 }
 
 export interface ProductListResponse {
@@ -54,4 +73,5 @@ export interface CreateProductRequest {
   status: ProductStatus;
   featured: boolean;
   gallery: number[];
+  categoryIds: number[];
 }

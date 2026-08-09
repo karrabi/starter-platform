@@ -17,6 +17,11 @@ export class ProductRepository {
             media: true,
           },
         },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
   }
@@ -33,6 +38,11 @@ export class ProductRepository {
           },
           include: {
             media: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
           },
         },
       },
@@ -57,7 +67,7 @@ export class ProductRepository {
   }
 
   create(data: CreateProductDto) {
-    const { gallery, ...productData } = data;
+    const { gallery, categoryIds, ...productData } = data;
 
     const mediaIds = Array.isArray(gallery)
       ? gallery.filter((value): value is number => typeof value === "number")
@@ -74,6 +84,11 @@ export class ProductRepository {
             featured: position === 0,
           })),
         },
+        categories: {
+          create: (categoryIds ?? []).map((categoryId) => ({
+            categoryId,
+          })),
+        },
       },
 
       include: {
@@ -85,12 +100,17 @@ export class ProductRepository {
             media: true,
           },
         },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
   }
 
   async update(id: number, data: UpdateProductDto) {
-    const { gallery, ...productData } = data;
+    const { gallery, categoryIds, ...productData } = data;
 
     const mediaIds = Array.isArray(gallery)
       ? gallery.filter((value): value is number => typeof value === "number")
@@ -99,6 +119,14 @@ export class ProductRepository {
     return prisma.$transaction(async (tx) => {
       if (mediaIds !== undefined) {
         await tx.productMedia.deleteMany({
+          where: {
+            productId: id,
+          },
+        });
+      }
+
+      if (categoryIds !== undefined) {
+        await tx.productCategory.deleteMany({
           where: {
             productId: id,
           },
@@ -122,6 +150,14 @@ export class ProductRepository {
               })),
             },
           }),
+
+          ...(categoryIds !== undefined && {
+            categories: {
+              create: categoryIds.map((categoryId) => ({
+                categoryId,
+              })),
+            },
+          }),
         },
 
         include: {
@@ -133,11 +169,16 @@ export class ProductRepository {
               media: true,
             },
           },
+
+          categories: {
+            include: {
+              category: true,
+            },
+          },
         },
       });
     });
   }
-
   delete(id: number) {
     return prisma.product.delete({
       where: {

@@ -27,6 +27,8 @@ const baseProductSchema = z.object({
   status: z.nativeEnum(ProductStatus).default(ProductStatus.DRAFT),
 
   featured: z.boolean().default(false),
+
+  categoryIds: z.array(z.number().int().positive()).optional(),
 });
 
 export const createProductSchema = baseProductSchema;

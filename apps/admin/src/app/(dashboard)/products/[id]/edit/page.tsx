@@ -68,6 +68,9 @@ export default function EditProductPage() {
                 .sort((a, b) => a.position - b.position)
                 .map((item) => item.mediaId)
             : [],
+          categoryIds: Array.isArray(product.categories)
+            ? product.categories.map((item) => item.categoryId)
+            : [],
         }}
         onSubmit={handleUpdate}
       />

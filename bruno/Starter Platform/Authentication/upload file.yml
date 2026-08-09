@@ -15,7 +15,7 @@ http:
       - name: file
         type: file
         value:
-          - C:\Users\hp\Documents\source\SEO\ANICI\edited\Raw03.png
+          - C:\Users\hp\Documents\source\SEO\DiaranWatch\images\1684-20WNB.png
         contentType: image/png
   auth: inherit
 

@@ -9,6 +9,7 @@ export interface CreateProductDto {
   seo?: Prisma.InputJsonValue;
   status: ProductStatus;
   featured?: boolean;
+  categoryIds?: number[];
 }
 
 export interface UpdateProductDto {
@@ -20,4 +21,5 @@ export interface UpdateProductDto {
   seo?: Prisma.InputJsonValue;
   status?: ProductStatus;
   featured?: boolean;
+  categoryIds?: number[];
 }

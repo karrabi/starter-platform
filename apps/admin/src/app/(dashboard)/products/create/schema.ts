@@ -22,6 +22,8 @@ export const createProductSchema = z.object({
   featured: z.boolean(),
 
   gallery: z.array(z.number()),
+
+  categoryIds: z.array(z.number().int().positive()),
 });
 
 export type CreateProductFormData = z.infer<typeof createProductSchema>;
