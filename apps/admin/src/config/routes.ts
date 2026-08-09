@@ -8,6 +8,7 @@ export const routes = {
 
   blog: "/blog",
   createBlog: "/blog/create",
+  editBlog: (id: number) => `/blog/${id}/edit`,
 
   pages: "/pages",
   createPage: "/pages/create",

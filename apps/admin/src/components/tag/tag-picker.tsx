@@ -5,9 +5,10 @@ import { useTags } from "@/hooks/use-tags";
 type TagPickerProps = {
   value: number[];
   onChange(ids: number[]): void;
+  type: "PRODUCT" | "BLOG";
 };
 
-export function TagPicker({ value, onChange }: TagPickerProps) {
+export function TagPicker({ value, onChange, type }: TagPickerProps) {
   const { data: tags = [], isLoading } = useTags();
 
   function handleToggle(id: number) {
@@ -23,19 +24,19 @@ export function TagPicker({ value, onChange }: TagPickerProps) {
     return <div>Loading tags...</div>;
   }
 
-  const productTags = tags.filter(
-    (tag) => tag.type === "PRODUCT" && tag.isActive,
-  );
+  const filteredTags = tags.filter((tag) => tag.type === type && tag.isActive);
 
-  if (productTags.length === 0) {
+  if (filteredTags.length === 0) {
     return (
-      <div className="text-sm text-gray-500">No product tags available.</div>
+      <div className="text-sm text-gray-500">
+        No {type.toLowerCase()} tags available.
+      </div>
     );
   }
 
   return (
     <div className="flex flex-wrap gap-2">
-      {productTags.map((tag) => {
+      {filteredTags.map((tag) => {
         const selected = value.includes(tag.id);
 
         return (

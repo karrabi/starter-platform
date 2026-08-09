@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { CheckboxField } from "@/components/forms/checkbox-field";
 import { SelectField } from "@/components/forms/select-field";
 import { TextArea } from "@/components/forms/text-area";
 import { TextField } from "@/components/forms/text-field";
+
 import { MediaPicker } from "@/components/media";
 import { CategoryPicker } from "@/components/category/category-picker";
 import { TagPicker } from "@/components/tag/tag-picker";
@@ -18,26 +18,26 @@ import { Card } from "@/components/ui/card";
 
 import { routes } from "@/config/routes";
 
-import type { CreateProductRequest } from "@/types/product";
+import type { CreateBlogRequest } from "@/types/blog";
 
 import {
-  createProductSchema,
-  type CreateProductFormData,
-} from "@/app/(dashboard)/products/create/schema";
+  createBlogSchema,
+  type CreateBlogFormData,
+} from "@/app/(dashboard)/blog/create/schema";
 
-type ProductFormProps = {
+type BlogFormProps = {
   mode: "create" | "edit";
-  initialValues?: Partial<CreateProductFormData>;
+  initialValues?: Partial<CreateBlogFormData>;
   isSubmitting: boolean;
-  onSubmit: (data: CreateProductRequest) => Promise<void>;
+  onSubmit: (data: CreateBlogRequest) => Promise<void>;
 };
 
-export function ProductForm({
+export function BlogForm({
   mode,
   initialValues,
   isSubmitting,
   onSubmit,
-}: ProductFormProps) {
+}: BlogFormProps) {
   const router = useRouter();
   const initializedRef = useRef(false);
   const {
@@ -46,17 +46,15 @@ export function ProductForm({
     control,
     reset,
     formState: { errors },
-  } = useForm<CreateProductFormData>({
-    resolver: zodResolver(createProductSchema),
+  } = useForm<CreateBlogFormData>({
+    resolver: zodResolver(createBlogSchema),
 
     defaultValues: {
-      name: "",
+      title: "",
       slug: "",
-      shortDescription: "",
-      description: "",
+      summary: "",
+      content: "",
       status: "DRAFT",
-      featured: false,
-      gallery: [],
       categoryIds: [],
       tagIds: [],
       seoTitle: "",
@@ -72,13 +70,11 @@ export function ProductForm({
     }
 
     reset({
-      name: initialValues.name ?? "",
+      title: initialValues.title ?? "",
       slug: initialValues.slug ?? "",
-      shortDescription: initialValues.shortDescription ?? "",
-      description: initialValues.description ?? "",
+      summary: initialValues.summary ?? "",
+      content: initialValues.content ?? "",
       status: initialValues.status ?? "DRAFT",
-      featured: initialValues.featured ?? false,
-      gallery: initialValues.gallery ?? [],
       categoryIds: initialValues.categoryIds ?? [],
       tagIds: initialValues.tagIds ?? [],
       seoTitle: initialValues.seoTitle ?? "",
@@ -89,7 +85,7 @@ export function ProductForm({
     initializedRef.current = true;
   }, [initialValues, reset]);
 
-  async function submit(data: CreateProductFormData) {
+  async function submit(data: CreateBlogFormData) {
     const seo = {
       ...(data.seoTitle && {
         title: data.seoTitle,
@@ -103,18 +99,21 @@ export function ProductForm({
         ogImageId: data.seoOgImageId,
       }),
     };
+
     await onSubmit({
-      name: data.name,
+      title: data.title,
       slug: data.slug,
-      shortDescription: data.shortDescription || null,
-      description: {
-        body: data.description,
+      summary: data.summary || null,
+
+      content: {
+        body: data.content,
       },
+
       status: data.status,
-      featured: data.featured,
-      gallery: data.gallery,
+
       categoryIds: data.categoryIds,
       tagIds: data.tagIds,
+
       seo: Object.keys(seo).length > 0 ? seo : undefined,
     });
   }
@@ -123,9 +122,9 @@ export function ProductForm({
     <Card>
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
         <TextField
-          label="Name"
-          error={errors.name?.message}
-          {...register("name")}
+          label="Title"
+          error={errors.title?.message}
+          {...register("title")}
         />
 
         <TextField
@@ -135,15 +134,15 @@ export function ProductForm({
         />
 
         <TextArea
-          label="Short Description"
-          error={errors.shortDescription?.message}
-          {...register("shortDescription")}
+          label="Summary"
+          error={errors.summary?.message}
+          {...register("summary")}
         />
 
         <TextArea
-          label="Description"
-          error={errors.description?.message}
-          {...register("description")}
+          label="Content"
+          error={errors.content?.message}
+          {...register("content")}
         />
 
         <SelectField
@@ -155,18 +154,12 @@ export function ProductForm({
               value: "DRAFT",
             },
             {
-              label: "Active",
-              value: "ACTIVE",
-            },
-            {
-              label: "Archived",
-              value: "ARCHIVED",
+              label: "Published",
+              value: "PUBLISHED",
             },
           ]}
           {...register("status")}
         />
-
-        <CheckboxField label="Featured Product" {...register("featured")} />
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Categories</label>
@@ -176,7 +169,7 @@ export function ProductForm({
             name="categoryIds"
             render={({ field }) => (
               <CategoryPicker
-                type="PRODUCT"
+                type="BLOG"
                 value={field.value}
                 onChange={field.onChange}
               />
@@ -192,23 +185,7 @@ export function ProductForm({
             name="tagIds"
             render={({ field }) => (
               <TagPicker
-                type="PRODUCT"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Gallery</label>
-
-          <Controller
-            control={control}
-            name="gallery"
-            render={({ field }) => (
-              <MediaPicker
-                multiple
+                type="BLOG"
                 value={field.value}
                 onChange={field.onChange}
               />
@@ -262,14 +239,14 @@ export function ProductForm({
                 ? "Creating..."
                 : "Saving..."
               : mode === "create"
-                ? "Create Product"
+                ? "Create Blog"
                 : "Save Changes"}
           </Button>
 
           <Button
             type="button"
             className="bg-gray-600 hover:bg-gray-700"
-            onClick={() => router.push(routes.products)}
+            onClick={() => router.push(routes.blog)}
           >
             Cancel
           </Button>

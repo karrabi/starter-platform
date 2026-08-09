@@ -5,9 +5,10 @@ import { useCategories } from "@/hooks/use-categories";
 type CategoryPickerProps = {
   value: number[];
   onChange(ids: number[]): void;
+  type: "PRODUCT" | "BLOG";
 };
 
-export function CategoryPicker({ value, onChange }: CategoryPickerProps) {
+export function CategoryPicker({ value, onChange, type }: CategoryPickerProps) {
   const { data: categories = [], isLoading } = useCategories();
 
   function handleToggle(id: number) {
@@ -23,21 +24,21 @@ export function CategoryPicker({ value, onChange }: CategoryPickerProps) {
     return <div>Loading categories...</div>;
   }
 
-  const productCategories = categories.filter(
-    (category) => category.type === "PRODUCT" && category.isActive,
+  const filteredCategories = categories.filter(
+    (category) => category.type === type && category.isActive,
   );
 
-  if (productCategories.length === 0) {
+  if (filteredCategories.length === 0) {
     return (
       <div className="text-sm text-gray-500">
-        No product categories available.
+        No {type.toLowerCase()} categories available.
       </div>
     );
   }
 
   return (
     <div className="space-y-2">
-      {productCategories.map((category) => (
+      {filteredCategories.map((category) => (
         <label
           key={category.id}
           className="flex cursor-pointer items-center gap-2"

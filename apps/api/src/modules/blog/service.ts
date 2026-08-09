@@ -17,11 +17,33 @@ export class BlogService {
   }
 
   create(data: CreateBlogDto) {
-    return this.repository.create(data);
+    return this.repository.create({
+      ...data,
+      publishedAt: data.status === "PUBLISHED" ? new Date() : null,
+    });
   }
 
-  update(id: number, data: UpdateBlogDto) {
-    return this.repository.update(id, data);
+  async update(id: number, data: UpdateBlogDto) {
+    const blog = await this.repository.findById(id);
+
+    if (!blog) {
+      return null;
+    }
+
+    let publishedAt = blog.publishedAt;
+
+    if (data.status === "PUBLISHED" && blog.status !== "PUBLISHED") {
+      publishedAt = new Date();
+    }
+
+    if (data.status === "DRAFT") {
+      publishedAt = null;
+    }
+
+    return this.repository.update(id, {
+      ...data,
+      publishedAt,
+    });
   }
 
   delete(id: number) {

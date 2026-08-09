@@ -12,6 +12,8 @@ const controller = new BlogController();
 
 router.get("/", authenticate, controller.getAll);
 
+router.get("/:id", authenticate, controller.getById);
+
 router.get("/public/:slug", controller.getPublic);
 
 router.post("/", authenticate, validate(createBlogSchema), controller.create);

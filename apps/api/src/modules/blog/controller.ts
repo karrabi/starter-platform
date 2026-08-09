@@ -16,6 +16,32 @@ export class BlogController {
     }
   };
 
+  getById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        ApiResponse.error(res, "Invalid blog ID", 400);
+        return;
+      }
+
+      const blog = await this.service.getById(id);
+
+      if (!blog) {
+        ApiResponse.error(res, "Blog not found", 404);
+        return;
+      }
+
+      ApiResponse.success(res, blog);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getPublic = async (
     req: Request<{ slug: string }>,
     res: Response,
