@@ -8,6 +8,9 @@ export class PagesService {
   getAll() {
     return this.repository.findAll();
   }
+  getById(id: number) {
+    return this.repository.findById(id);
+  }
 
   getPublishedBySlug(slug: string) {
     return this.repository.findPublishedBySlug(slug);

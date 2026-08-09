@@ -20,6 +20,32 @@ export class PagesController {
     }
   };
 
+  getById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        ApiResponse.error(res, "Invalid page ID", 400);
+        return;
+      }
+
+      const page = await this.service.getById(id);
+
+      if (!page) {
+        ApiResponse.error(res, "Page not found", 404);
+        return;
+      }
+
+      ApiResponse.success(res, page);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getPublishedBySlug = async (
     req: Request,
     res: Response,

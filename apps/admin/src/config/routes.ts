@@ -12,6 +12,7 @@ export const routes = {
 
   pages: "/pages",
   createPage: "/pages/create",
+  editPage: (id: number) => `/pages/${id}/edit`,
 
   media: "/media",
 

@@ -17,7 +17,7 @@ pagesRouter.get("/public/:slug", pagesController.getPublishedBySlug);
  * Protected admin endpoints
  */
 pagesRouter.get("/", authenticate, pagesController.getAll);
-
+pagesRouter.get("/:id", authenticate, pagesController.getById);
 pagesRouter.post(
   "/",
   authenticate,
