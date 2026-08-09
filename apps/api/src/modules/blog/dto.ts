@@ -8,6 +8,8 @@ export interface CreateBlogDto {
   status: BlogStatus;
   seo?: Prisma.InputJsonValue;
   publishedAt?: Date | null;
+  categoryIds?: number[];
+  tagIds?: number[];
 }
 
 export interface UpdateBlogDto {
@@ -18,4 +20,6 @@ export interface UpdateBlogDto {
   status?: BlogStatus;
   seo?: Prisma.InputJsonValue;
   publishedAt?: Date | null;
+  categoryIds?: number[];
+  tagIds?: number[];
 }

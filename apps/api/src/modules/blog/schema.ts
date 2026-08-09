@@ -24,6 +24,10 @@ const baseBlogSchema = z.object({
   seo: seoSchema.nullable().optional(),
 
   publishedAt: z.coerce.date().nullable().optional(),
+
+  categoryIds: z.array(z.number().int().positive()).optional(),
+
+  tagIds: z.array(z.number().int().positive()).optional(),
 });
 
 export const createBlogSchema = baseBlogSchema;
