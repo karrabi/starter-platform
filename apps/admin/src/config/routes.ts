@@ -26,6 +26,8 @@ export const routes = {
   navigationItems: (id: number) => `/navigation/${id}/items`,
 
   users: "/users",
+  createUser: "/users/create",
+  editUser: (id: number) => `/users/${id}/edit`,
 
   settings: "/settings",
 } as const;

@@ -3,7 +3,7 @@ import express from "express";
 import path from "node:path";
 
 import userRoutes from "./modules/user/routes";
-
+import roleRoutes from "./modules/roles/routes";
 import { ApiResponse } from "./utils/response";
 
 import { errorHandler } from "./middlewares/errorHandler";
@@ -37,6 +37,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/users", userRoutes);
+app.use("/api/roles", roleRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/pages", pagesRoutes);

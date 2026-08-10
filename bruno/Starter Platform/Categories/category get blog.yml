@@ -1,14 +1,17 @@
 info:
-  name: Profile
+  name: category get blog
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: GET
-  url: "{{BASE_URL}}/api/auth/me"
+  url: "{{BASE_URL}}/api/categories/type/BLOG"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
+  body:
+    type: json
+    data: ""
   auth: inherit
 
 settings:

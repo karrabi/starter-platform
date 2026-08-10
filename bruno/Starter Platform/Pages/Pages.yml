@@ -1,0 +1,38 @@
+info:
+  name: Pages
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/pages"
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
+  body:
+    type: json
+    data: |-
+      {
+        "title": "About Us",
+        "slug": "about-us",
+        "content": {
+          "heading": "About Us",
+          "body": "Company information"
+        },
+        "status": "PUBLISHED",
+        "seo": {
+          "title": "About Our Printing Company",
+          "description": "Learn more about our printing services.",
+          "keywords": [
+            "printing company",
+            "printing services"
+          ]
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
