@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
@@ -27,6 +29,7 @@ export default function NavigationItemsPage() {
   const menuId = Number(params.id);
 
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const { data: menu, isLoading: isMenuLoading } = useMenu(menuId);
 
@@ -39,17 +42,32 @@ export default function NavigationItemsPage() {
   const deleteMutation = useDeleteMenuItem(menuId);
 
   async function handleSubmit(data: CreateMenuItemRequest) {
-    if (editingItem) {
-      await updateMutation.mutateAsync({
-        id: editingItem.id,
-        data,
-      });
+    setFormError(null);
 
-      setEditingItem(null);
-      return;
+    try {
+      if (editingItem) {
+        await updateMutation.mutateAsync({
+          id: editingItem.id,
+          data,
+        });
+
+        setEditingItem(null);
+        return;
+      }
+
+      await createMutation.mutateAsync(data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+
+        if (typeof message === "string") {
+          setFormError(message);
+          return;
+        }
+      }
+
+      setFormError("An unexpected error occurred.");
     }
-
-    await createMutation.mutateAsync(data);
   }
 
   async function handleDelete(item: MenuItem) {
@@ -84,6 +102,11 @@ export default function NavigationItemsPage() {
       />
 
       <div className="space-y-6">
+        {formError && (
+          <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+            {formError}
+          </div>
+        )}
         <MenuItemForm
           key={
             editingItem ? `edit-${editingItem.id}` : `create-${items.length}`
@@ -92,7 +115,10 @@ export default function NavigationItemsPage() {
           editingItem={editingItem}
           isSubmitting={createMutation.isPending || updateMutation.isPending}
           onSubmit={handleSubmit}
-          onCancelEdit={() => setEditingItem(null)}
+          onCancelEdit={() => {
+            setFormError(null);
+            setEditingItem(null);
+          }}
         />
 
         <DataTable
@@ -139,7 +165,13 @@ export default function NavigationItemsPage() {
               title: "Actions",
               render: (item) => (
                 <div className="flex gap-2">
-                  <Button type="button" onClick={() => setEditingItem(item)}>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setFormError(null);
+                      setEditingItem(item);
+                    }}
+                  >
                     <Pencil className="h-4 w-4" />
                   </Button>
 

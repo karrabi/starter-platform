@@ -1,3 +1,4 @@
+import { AppError } from "../../utils/app-error";
 import type {
   CreateMenuDto,
   CreateMenuItemDto,
@@ -5,6 +6,21 @@ import type {
   UpdateMenuItemDto,
 } from "./dto";
 import { NavigationRepository } from "./repository";
+
+type NavigationTreeItem = {
+  id: number;
+  menuId: number;
+  title: string;
+  url: string;
+  icon: string | null;
+  parentId: number | null;
+  sortOrder: number;
+  target: string | null;
+  isVisible: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  children: NavigationTreeItem[];
+};
 
 export class NavigationService {
   constructor(private readonly repository = new NavigationRepository()) {}
@@ -17,8 +33,47 @@ export class NavigationService {
     return this.repository.findMenuById(id);
   }
 
-  getPublicMenu(name: string) {
-    return this.repository.findMenuByName(name);
+  async getPublicMenu(name: string) {
+    const menu = await this.repository.findMenuByName(name);
+
+    if (!menu) {
+      return null;
+    }
+
+    const itemMap = new Map<number, NavigationTreeItem>();
+
+    for (const item of menu.items) {
+      itemMap.set(item.id, {
+        ...item,
+        children: [],
+      });
+    }
+
+    const rootItems: NavigationTreeItem[] = [];
+
+    for (const item of menu.items) {
+      const treeItem = itemMap.get(item.id);
+
+      if (!treeItem) {
+        continue;
+      }
+
+      if (item.parentId === null) {
+        rootItems.push(treeItem);
+        continue;
+      }
+
+      const parent = itemMap.get(item.parentId);
+
+      if (parent) {
+        parent.children.push(treeItem);
+      }
+    }
+
+    return {
+      ...menu,
+      items: rootItems,
+    };
   }
 
   createMenu(data: CreateMenuDto) {
@@ -105,19 +160,25 @@ export class NavigationService {
 
     if (data.parentId != null) {
       if (data.parentId === id) {
-        throw new Error("Menu item cannot be its own parent");
+        throw new AppError("Menu item cannot be its own parent", 400);
       }
 
       const parent = await this.repository.findMenuItemById(data.parentId);
 
       if (!parent || parent.menuId !== item.menuId) {
-        throw new Error("Parent menu item must belong to the same menu");
+        throw new AppError(
+          "Parent menu item must belong to the same menu",
+          400,
+        );
       }
 
       const createsCycle = await this.wouldCreateCycle(id, data.parentId);
 
       if (createsCycle) {
-        throw new Error("Menu item parent relationship would create a cycle");
+        throw new AppError(
+          "Menu item parent relationship would create a cycle",
+          400,
+        );
       }
     }
 
