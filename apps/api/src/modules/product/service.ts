@@ -9,6 +9,10 @@ export class ProductService {
     return this.repository.findAll();
   }
 
+  getPublic() {
+    return this.repository.findActive();
+  }
+
   getPublicBySlug(slug: string) {
     return this.repository.findActiveBySlug(slug);
   }

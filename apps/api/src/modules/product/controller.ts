@@ -28,6 +28,20 @@ export class ProductController {
     }
   };
 
+  getPublic = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const products = await this.service.getPublic();
+
+      ApiResponse.success(res, products);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getById = async (
     req: Request<{ id: string }>,
     res: Response,

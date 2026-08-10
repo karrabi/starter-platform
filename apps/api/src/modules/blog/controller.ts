@@ -16,6 +16,16 @@ export class BlogController {
     }
   };
 
+  getPublicList = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const blogs = await this.service.getPublished();
+
+      ApiResponse.success(res, blogs);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getById = async (
     req: Request<{ id: string }>,
     res: Response,

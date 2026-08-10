@@ -31,6 +31,41 @@ export class ProductRepository {
     });
   }
 
+  findActive() {
+    return prisma.product.findMany({
+      where: {
+        status: "ACTIVE",
+      },
+
+      orderBy: {
+        updatedAt: "desc",
+      },
+
+      include: {
+        media: {
+          orderBy: {
+            position: "asc",
+          },
+          include: {
+            media: true,
+          },
+        },
+
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+      },
+    });
+  }
+
   findById(id: number) {
     return prisma.product.findUnique({
       where: {
@@ -72,6 +107,29 @@ export class ProductRepository {
       where: {
         slug,
         status: "ACTIVE",
+      },
+
+      include: {
+        media: {
+          orderBy: {
+            position: "asc",
+          },
+          include: {
+            media: true,
+          },
+        },
+
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
       },
     });
   }

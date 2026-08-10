@@ -8,7 +8,7 @@ import { createProductSchema, updateProductSchema } from "./schema";
 
 const router = Router();
 const controller = new ProductController();
-
+router.get("/public", controller.getPublic);
 router.get("/public/:slug", controller.getPublicBySlug);
 
 router.get("/", authenticate, controller.getAll);

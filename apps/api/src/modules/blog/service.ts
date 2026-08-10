@@ -8,6 +8,10 @@ export class BlogService {
     return this.repository.findAll();
   }
 
+  getPublished() {
+    return this.repository.findPublished();
+  }
+
   getById(id: number) {
     return this.repository.findById(id);
   }

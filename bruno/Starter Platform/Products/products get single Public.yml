@@ -1,11 +1,11 @@
 info:
-  name: get Page
+  name: products get single Public
   type: http
-  seq: 2
+  seq: 14
 
 http:
   method: GET
-  url: "{{BASE_URL}}/api/pages/public/about-us"
+  url: "{{BASE_URL}}/api/products/public/testproduct03"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows

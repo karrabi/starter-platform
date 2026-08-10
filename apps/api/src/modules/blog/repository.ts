@@ -24,6 +24,32 @@ export class BlogRepository {
     });
   }
 
+  findPublished() {
+    return prisma.blog.findMany({
+      where: {
+        status: "PUBLISHED",
+      },
+
+      orderBy: {
+        publishedAt: "desc",
+      },
+
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+
+        tags: {
+          include: {
+            tag: true,
+          },
+        },
+      },
+    });
+  }
+
   findById(id: number) {
     return prisma.blog.findUnique({
       where: {
