@@ -10,6 +10,8 @@ const router = Router();
 
 const controller = new SettingsController();
 
+router.get("/public/:group", controller.getPublicGroup);
+
 router.get("/:group", authenticate, controller.getGroup);
 
 router.put(
