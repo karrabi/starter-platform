@@ -9,6 +9,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { getMediaById } from "@/services/media.service";
 import { getMediaUrl } from "@/lib/media";
+import { Footer } from "@/components/layout/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -95,6 +96,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

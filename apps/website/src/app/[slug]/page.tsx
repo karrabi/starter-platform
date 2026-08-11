@@ -17,13 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: page.seo?.title || page.title,
-
       description: page.seo?.description || undefined,
-
       keywords: page.seo?.keywords || undefined,
     };
   } catch {
-    return {};
+    notFound();
   }
 }
 
