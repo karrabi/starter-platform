@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getProductBySlug } from "@/services/product.service";
+import { ProductGallery } from "@/components/products/product-gallery";
+
+import { getMediaUrl } from "@/lib/media";
+import { getMediaById } from "@/services/media.service";
 
 type Props = {
   params: Promise<{
@@ -15,10 +19,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const product = await getProductBySlug(slug);
 
+    let ogImageUrl: string | null = null;
+
+    if (product.seo?.ogImageId) {
+      try {
+        const ogMedia = await getMediaById(product.seo.ogImageId);
+
+        ogImageUrl = getMediaUrl(ogMedia.path);
+      } catch {
+        ogImageUrl = null;
+      }
+    }
+
     return {
       title: product.seo?.title || product.name,
 
-      description: product.seo?.description || undefined,
+      description:
+        product.seo?.description || product.shortDescription || undefined,
+
+      openGraph: {
+        title: product.seo?.title || product.name,
+
+        description:
+          product.seo?.description || product.shortDescription || undefined,
+
+        ...(ogImageUrl
+          ? {
+              images: [
+                {
+                  url: ogImageUrl,
+                },
+              ],
+            }
+          : {}),
+      },
     };
   } catch {
     return {};
@@ -45,6 +79,7 @@ export default async function ProductPage({ params }: Props) {
             {product.shortDescription}
           </p>
         )}
+        <ProductGallery media={product.media} productName={product.name} />
         {product.categories.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {product.categories.map(({ category }) => (

@@ -9,6 +9,8 @@ const router = Router();
 
 const controller = new MediaController();
 
+router.get("/public/:id", controller.getPublicById);
+
 router.get("/", authenticate, controller.getAll);
 
 router.post("/upload", authenticate, upload.single("file"), controller.upload);

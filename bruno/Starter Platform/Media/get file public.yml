@@ -1,25 +1,23 @@
 info:
-  name: Settings general
+  name: get file public
   type: http
   seq: 4
 
 http:
-  method: PUT
-  url: "{{BASE_URL}}/api/settings/general"
+  method: GET
+  url: "{{BASE_URL}}/api/media/public/6"
   headers:
     - name: Authorization
       value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
   body:
-    type: json
-    data: |-
-      {
-        "value": {
-          "siteName": "Starter Platform",
-          "siteDescription": "Reusable website platform",
-          "logoMediaId": 6,
-          "faviconMediaId": 6
-        }
-      }
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - C:\Users\hp\Documents\source\SEO\ANICI\edited\Raw03.png
+        contentType: image/png
+        disabled: true
   auth: inherit
 
 settings:

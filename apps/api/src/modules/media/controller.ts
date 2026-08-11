@@ -51,6 +51,32 @@ export class MediaController {
     }
   };
 
+  getPublicById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const id = Number(req.params.id);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        ApiResponse.error(res, "Invalid media id", 400);
+        return;
+      }
+
+      const media = await this.service.getById(id);
+
+      if (!media) {
+        ApiResponse.error(res, "File not found", 404);
+        return;
+      }
+
+      ApiResponse.success(res, media);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   delete = async (
     req: Request,
     res: Response,
