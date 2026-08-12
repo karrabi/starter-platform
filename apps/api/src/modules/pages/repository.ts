@@ -27,6 +27,17 @@ export class PagesRepository {
     });
   }
 
+  findPublished() {
+    return prisma.page.findMany({
+      where: {
+        status: "PUBLISHED",
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+  }
+
   findById(id: number) {
     return prisma.page.findUnique({
       where: {

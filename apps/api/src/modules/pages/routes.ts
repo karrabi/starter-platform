@@ -9,10 +9,11 @@ const pagesRouter = Router();
 const pagesController = new PagesController();
 
 /*
- * Public endpoint
+ * Public endpoints
  */
-pagesRouter.get("/public/:slug", pagesController.getPublishedBySlug);
+pagesRouter.get("/public", pagesController.getPublished);
 
+pagesRouter.get("/public/:slug", pagesController.getPublishedBySlug);
 /*
  * Protected admin endpoints
  */

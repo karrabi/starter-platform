@@ -2,50 +2,50 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { routes } from "@/config/routes";
 
 const menu = [
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: routes.dashboard,
   },
   {
     title: "Products",
-    href: "/products",
+    href: routes.products,
   },
   {
     title: "Pages",
-    href: "/pages",
+    href: routes.pages,
   },
   {
     title: "Blog",
-    href: "/blog",
+    href: routes.blog,
   },
   {
     title: "Media",
-    href: "/media",
+    href: routes.media,
   },
   {
     title: "Categories",
-    href: "/categories",
+    href: routes.categories,
   },
   {
     title: "Tags",
-    href: "/tags",
+    href: routes.tags,
   },
   {
     title: "Navigation",
-    href: "/navigation",
+    href: routes.navigation,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: routes.settings,
   },
   {
     title: "Users",
-    href: "/users",
+    href: routes.users,
   },
 ];
-
 export function Sidebar() {
   const pathname = usePathname();
 

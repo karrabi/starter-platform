@@ -9,11 +9,23 @@ type ApiResponse<T> = {
   message: string;
   data: T;
 };
+type ApiGetOptions = {
+  revalidate?: number;
+  tags?: string[];
+};
 
-export async function apiGet<T>(path: string): Promise<T> {
+export async function apiGet<T>(
+  path: string,
+  options: ApiGetOptions = {},
+): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     headers: {
       Accept: "application/json",
+    },
+
+    next: {
+      revalidate: options.revalidate,
+      tags: options.tags,
     },
   });
 

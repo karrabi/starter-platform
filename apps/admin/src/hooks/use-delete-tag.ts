@@ -2,17 +2,17 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { MediaService } from "@/services/media.service";
+import { TagService } from "@/services/tag.service";
 
-export function useUploadMedia() {
+export function useDeleteTag() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => MediaService.upload(file),
+    mutationFn: (id: number) => TagService.delete(id),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["media"],
+        queryKey: ["tags"],
       });
     },
   });

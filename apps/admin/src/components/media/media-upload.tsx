@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useRef } from "react";
 
 import { useUploadMedia } from "@/hooks/use-upload-media";
 
@@ -10,6 +10,8 @@ type MediaUploadProps = {
 
 export function MediaUpload({ onUploaded }: MediaUploadProps) {
   const uploadMutation = useUploadMedia();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -26,8 +28,27 @@ export function MediaUpload({ onUploaded }: MediaUploadProps) {
   }
 
   return (
-    <div className="mb-6">
-      <input type="file" accept="image/*" onChange={handleChange} />
+    <div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,.pdf"
+        onChange={handleChange}
+        className="hidden"
+      />
+
+      <button
+        type="button"
+        onClick={() => inputRef.current?.click()}
+        disabled={uploadMutation.isPending}
+        className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+      >
+        {uploadMutation.isPending ? "Uploading..." : "Upload file"}
+      </button>
+
+      {uploadMutation.isError && (
+        <p className="mt-2 text-sm text-red-600">File upload failed.</p>
+      )}
     </div>
   );
 }

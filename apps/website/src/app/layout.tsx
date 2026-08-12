@@ -11,6 +11,8 @@ import { getMediaById } from "@/services/media.service";
 import { getMediaUrl } from "@/lib/media";
 import { Footer } from "@/components/layout/footer";
 
+import { getSiteOrigin, getSiteUrl } from "@/lib/site-url";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -50,13 +52,20 @@ export async function generateMetadata(): Promise<Metadata> {
       defaultOgImageUrl = null;
     }
   }
+  const siteOrigin = getSiteOrigin();
   return {
+    metadataBase: new URL(siteOrigin),
+
     title: {
       default: seo.defaultTitle,
       template: seo.titleTemplate || "%s",
     },
 
     description: seo.defaultDescription,
+
+    alternates: {
+      canonical: getSiteUrl("/"),
+    },
 
     ...(faviconUrl
       ? {
@@ -67,6 +76,9 @@ export async function generateMetadata(): Promise<Metadata> {
       : {}),
 
     openGraph: {
+      type: "website",
+      url: getSiteUrl("/"),
+      siteName: general.siteName,
       title: seo.defaultTitle,
       description: seo.defaultDescription,
 
@@ -77,6 +89,17 @@ export async function generateMetadata(): Promise<Metadata> {
                 url: defaultOgImageUrl,
               },
             ],
+          }
+        : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.defaultTitle,
+      description: seo.defaultDescription,
+
+      ...(defaultOgImageUrl
+        ? {
+            images: [defaultOgImageUrl],
           }
         : {}),
     },

@@ -18,4 +18,8 @@ export class MediaService {
   static getAll() {
     return apiClient.get("/media");
   }
+
+  static delete(id: number) {
+    return apiClient.delete(`/media/${id}`);
+  }
 }

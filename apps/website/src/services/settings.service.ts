@@ -29,17 +29,29 @@ export type SocialSettings = {
 };
 
 export function getGeneralSettings() {
-  return apiGet<GeneralSettings>("/settings/public/general");
+  return apiGet<GeneralSettings>("/settings/public/general", {
+    revalidate: 300,
+    tags: ["settings"],
+  });
 }
 
 export function getSeoSettings() {
-  return apiGet<SeoSettings>("/settings/public/seo");
+  return apiGet<SeoSettings>("/settings/public/seo", {
+    revalidate: 300,
+    tags: ["settings"],
+  });
 }
 
 export function getContactSettings() {
-  return apiGet<ContactSettings>("/settings/public/contact");
+  return apiGet<ContactSettings>("/settings/public/contact", {
+    revalidate: 300,
+    tags: ["settings"],
+  });
 }
 
 export function getSocialSettings() {
-  return apiGet<SocialSettings>("/settings/public/social");
+  return apiGet<SocialSettings>("/settings/public/social", {
+    revalidate: 300,
+    tags: ["settings"],
+  });
 }

@@ -2,17 +2,20 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { MediaService } from "@/services/media.service";
+import {
+  CategoryService,
+  type CreateCategoryInput,
+} from "@/services/category.service";
 
-export function useUploadMedia() {
+export function useCreateCategory() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => MediaService.upload(file),
+    mutationFn: (data: CreateCategoryInput) => CategoryService.create(data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["media"],
+        queryKey: ["categories"],
       });
     },
   });

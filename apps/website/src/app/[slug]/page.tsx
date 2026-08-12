@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { getPageBySlug } from "@/services/page.service";
 
+import { getSiteUrl } from "@/lib/site-url";
+
 type Props = {
   params: Promise<{
     slug: string;
@@ -15,10 +17,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const page = await getPageBySlug(slug);
 
+    const url = getSiteUrl(`/${slug}`);
+
     return {
       title: page.seo?.title || page.title,
+
       description: page.seo?.description || undefined,
+
       keywords: page.seo?.keywords || undefined,
+
+      alternates: {
+        canonical: url,
+      },
+
+      openGraph: {
+        type: "website",
+        url,
+        title: page.seo?.title || page.title,
+        description: page.seo?.description || undefined,
+      },
+
+      twitter: {
+        card: "summary_large_image",
+        title: page.seo?.title || page.title,
+        description: page.seo?.description || undefined,
+      },
     };
   } catch {
     notFound();

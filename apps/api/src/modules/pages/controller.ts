@@ -20,6 +20,20 @@ export class PagesController {
     }
   };
 
+  getPublished = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const pages = await this.service.getPublished();
+
+      ApiResponse.success(res, pages);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getById = async (
     req: Request,
     res: Response,

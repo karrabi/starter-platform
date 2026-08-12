@@ -1,5 +1,9 @@
 import fs from "node:fs";
 
+import { env } from "../../config/env";
+
+import path from "node:path";
+
 import type { NextFunction, Request, Response } from "express";
 
 import { ApiResponse } from "../../utils/response";
@@ -92,8 +96,16 @@ export class MediaController {
         return;
       }
 
-      if (fs.existsSync(media.path)) {
-        fs.unlinkSync(media.path);
+      const uploadRoot = path.isAbsolute(env.UPLOAD_DIR)
+        ? env.UPLOAD_DIR
+        : path.join(process.cwd(), env.UPLOAD_DIR);
+
+      const relativePath = media.path.replace(/^\/uploads\//, "");
+
+      const filePath = path.join(uploadRoot, relativePath);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
       }
 
       await this.service.delete(id);

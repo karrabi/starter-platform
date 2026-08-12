@@ -7,6 +7,8 @@ import { ProductGallery } from "@/components/products/product-gallery";
 import { getMediaUrl } from "@/lib/media";
 import { getMediaById } from "@/services/media.service";
 
+import { getSiteUrl } from "@/lib/site-url";
+
 type Props = {
   params: Promise<{
     slug: string;
@@ -18,6 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const product = await getProductBySlug(slug);
+
+    const url = getSiteUrl(`/products/${slug}`);
 
     let ogImageUrl: string | null = null;
 
@@ -37,7 +41,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description:
         product.seo?.description || product.shortDescription || undefined,
 
+      alternates: {
+        canonical: url,
+      },
+
       openGraph: {
+        type: "website",
+        url,
+
         title: product.seo?.title || product.name,
 
         description:
@@ -50,6 +61,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                   url: ogImageUrl,
                 },
               ],
+            }
+          : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+
+        title: product.seo?.title || product.name,
+
+        description:
+          product.seo?.description || product.shortDescription || undefined,
+
+        ...(ogImageUrl
+          ? {
+              images: [ogImageUrl],
             }
           : {}),
       },

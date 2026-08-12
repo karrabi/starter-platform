@@ -2,17 +2,17 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { MediaService } from "@/services/media.service";
+import { TagService, type CreateTagInput } from "@/services/tag.service";
 
-export function useUploadMedia() {
+export function useCreateTag() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (file: File) => MediaService.upload(file),
+    mutationFn: (data: CreateTagInput) => TagService.create(data),
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["media"],
+        queryKey: ["tags"],
       });
     },
   });

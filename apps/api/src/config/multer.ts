@@ -2,8 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 import multer from "multer";
+import { env } from "./env";
 
-const uploadRoot = path.join(process.cwd(), "uploads");
+const uploadRoot = path.isAbsolute(env.UPLOAD_DIR)
+  ? env.UPLOAD_DIR
+  : path.join(process.cwd(), env.UPLOAD_DIR);
 
 const imageDir = path.join(uploadRoot, "images");
 const documentDir = path.join(uploadRoot, "documents");

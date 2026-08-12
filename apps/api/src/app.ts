@@ -5,7 +5,7 @@ import path from "node:path";
 import userRoutes from "./modules/user/routes";
 import roleRoutes from "./modules/roles/routes";
 import { ApiResponse } from "./utils/response";
-
+import { env } from "./config/env";
 import { errorHandler } from "./middlewares/errorHandler";
 
 import authRoutes from "./modules/auth/routes";
@@ -24,7 +24,27 @@ import productTagRoutes from "./modules/product-tag/routes";
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = env.CORS_ORIGINS.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
+  }),
+);
 app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
@@ -34,7 +54,11 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+const uploadDirectory = path.isAbsolute(env.UPLOAD_DIR)
+  ? env.UPLOAD_DIR
+  : path.join(process.cwd(), env.UPLOAD_DIR);
+
+app.use("/uploads", express.static(uploadDirectory));
 
 app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);
