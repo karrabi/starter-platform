@@ -2,14 +2,17 @@
 
 import { useParams, useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { BlogForm } from "@/components/blog/blog-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageContainer } from "@/components/ui/page-container";
 
+import { routes } from "@/config/routes";
+
 import { useBlog } from "@/hooks/use-blog";
 import { useUpdateBlog } from "@/hooks/use-update-blog";
 
-import { routes } from "@/config/routes";
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreateBlogRequest, UpdateBlogRequest } from "@/types/blog";
 
@@ -67,28 +70,30 @@ export default function EditBlogPage() {
     : [];
 
   return (
-    <PageContainer>
-      <PageHeader title="Edit Blog" description="Edit blog post." />
+    <PermissionGuard allowedRoles={permissions.blog.write}>
+      <PageContainer>
+        <PageHeader title="Edit Blog" description="Edit blog post." />
 
-      <BlogForm
-        mode="edit"
-        isSubmitting={updateMutation.isPending}
-        onSubmit={handleUpdate}
-        initialValues={{
-          title: blog.title,
-          slug: blog.slug,
-          summary: blog.summary ?? "",
-          content,
-          status: blog.status,
+        <BlogForm
+          mode="edit"
+          isSubmitting={updateMutation.isPending}
+          onSubmit={handleUpdate}
+          initialValues={{
+            title: blog.title,
+            slug: blog.slug,
+            summary: blog.summary ?? "",
+            content,
+            status: blog.status,
 
-          categoryIds,
-          tagIds,
+            categoryIds,
+            tagIds,
 
-          seoTitle,
-          seoDescription,
-          seoOgImageId,
-        }}
-      />
-    </PageContainer>
+            seoTitle,
+            seoDescription,
+            seoOgImageId,
+          }}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

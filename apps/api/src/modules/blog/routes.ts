@@ -5,7 +5,7 @@ import { validate } from "../../middlewares/validate";
 
 import { BlogController } from "./controller";
 import { createBlogSchema, updateBlogSchema } from "./schema";
-
+import { authorize } from "../../middlewares/authorize";
 const router = Router();
 
 const controller = new BlogController();
@@ -14,14 +14,41 @@ router.get("/public", controller.getPublicList);
 
 router.get("/public/:slug", controller.getPublic);
 
-router.get("/", authenticate, controller.getAll);
+router.get(
+  "/",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  controller.getAll,
+);
 
-router.get("/:id", authenticate, controller.getById);
+router.get(
+  "/:id",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  controller.getById,
+);
 
-router.post("/", authenticate, validate(createBlogSchema), controller.create);
+router.post(
+  "/",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  validate(createBlogSchema),
+  controller.create,
+);
 
-router.put("/:id", authenticate, validate(updateBlogSchema), controller.update);
+router.put(
+  "/:id",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  validate(updateBlogSchema),
+  controller.update,
+);
 
-router.delete("/:id", authenticate, controller.delete);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  controller.delete,
+);
 
 export default router;

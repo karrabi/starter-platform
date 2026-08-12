@@ -18,7 +18,11 @@ const defaultValues: ContactSettings = {
   address: "",
 };
 
-export function ContactSettingsForm() {
+type Props = {
+  readOnly?: boolean;
+};
+
+export function ContactSettingsForm({ readOnly = false }: Props) {
   const { data: setting, isLoading } = useSettings("contact");
 
   const updateMutation = useUpdateSettings("contact");
@@ -43,6 +47,10 @@ export function ContactSettingsForm() {
   }, [setting, reset]);
 
   async function submit(data: ContactSettings) {
+    if (readOnly) {
+      return;
+    }
+
     setFormError(null);
     setSuccessMessage(null);
 
@@ -94,25 +102,30 @@ export function ContactSettingsForm() {
         <TextField
           label="Email"
           type="email"
+          disabled={readOnly}
           error={errors.email?.message}
           {...register("email")}
         />
 
         <TextField
           label="Phone"
+          disabled={readOnly}
           error={errors.phone?.message}
           {...register("phone")}
         />
 
         <TextField
           label="Address"
+          disabled={readOnly}
           error={errors.address?.message}
           {...register("address")}
         />
 
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {updateMutation.isPending ? "Saving..." : "Save Contact Settings"}
-        </Button>
+        {!readOnly && (
+          <Button type="submit" disabled={updateMutation.isPending}>
+            {updateMutation.isPending ? "Saving..." : "Save Contact Settings"}
+          </Button>
+        )}
       </form>
     </Card>
   );

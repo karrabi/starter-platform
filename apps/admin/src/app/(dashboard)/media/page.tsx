@@ -3,9 +3,15 @@
 import { useState } from "react";
 
 import { MediaUpload } from "@/components/media/media-upload";
+
 import { config } from "@/config/config";
+
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDeleteMedia } from "@/hooks/use-delete-media";
 import { useMedia } from "@/hooks/use-media";
+
+import { hasPermission, permissions } from "@/lib/auth/permissions";
+
 import type { Media } from "@/types/media";
 
 function formatFileSize(bytes: number): string {
@@ -23,11 +29,21 @@ function formatFileSize(bytes: number): string {
 export default function MediaPage() {
   const { data: media = [], isLoading, isError } = useMedia();
 
+  const { data: user } = useCurrentUser();
+
   const deleteMutation = useDeleteMedia();
 
   const [selectedMedia, setSelectedMedia] = useState<Media | null>(null);
 
+  const canUpload = hasPermission(user?.role, permissions.media.upload);
+
+  const canDelete = hasPermission(user?.role, permissions.media.delete);
+
   async function handleDelete(item: Media) {
+    if (!canDelete) {
+      return;
+    }
+
     const confirmed = window.confirm(`Delete "${item.originalName}"?`);
 
     if (!confirmed) {
@@ -59,7 +75,7 @@ export default function MediaPage() {
         </p>
       </div>
 
-      <MediaUpload onUploaded={() => {}} />
+      {canUpload && <MediaUpload onUploaded={() => {}} />}
 
       {!media.length ? (
         <div className="rounded-lg border border-dashed p-10 text-center text-gray-500">
@@ -109,14 +125,16 @@ export default function MediaPage() {
                     {formatFileSize(item.size)}
                   </p>
 
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(item)}
-                    disabled={deleteMutation.isPending}
-                    className="mt-2 text-sm text-red-600 hover:underline disabled:opacity-50"
-                  >
-                    Delete
-                  </button>
+                  {canDelete && (
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(item)}
+                      disabled={deleteMutation.isPending}
+                      className="mt-2 text-sm text-red-600 hover:underline disabled:opacity-50"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             );
@@ -131,16 +149,19 @@ export default function MediaPage() {
           <dl className="mt-4 grid gap-2 text-sm">
             <div>
               <dt className="font-medium">Name</dt>
+
               <dd className="text-gray-600">{selectedMedia.originalName}</dd>
             </div>
 
             <div>
               <dt className="font-medium">Type</dt>
+
               <dd className="text-gray-600">{selectedMedia.mimeType}</dd>
             </div>
 
             <div>
               <dt className="font-medium">Size</dt>
+
               <dd className="text-gray-600">
                 {formatFileSize(selectedMedia.size)}
               </dd>
@@ -148,6 +169,7 @@ export default function MediaPage() {
 
             <div>
               <dt className="font-medium">Path</dt>
+
               <dd className="break-all text-gray-600">{selectedMedia.path}</dd>
             </div>
           </dl>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { List, Trash2 } from "lucide-react";
 
 import { useDeleteMenu, useMenus } from "@/hooks/use-navigation";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/tables/data-table";
@@ -12,11 +13,21 @@ import { PageContainer } from "@/components/ui/page-container";
 
 import { routes } from "@/config/routes";
 
+import { hasPermission, permissions } from "@/lib/auth/permissions";
+
 export default function NavigationPage() {
   const { data = [], isLoading } = useMenus();
+  const { data: user } = useCurrentUser();
+
   const deleteMutation = useDeleteMenu();
 
+  const canWrite = hasPermission(user?.role, permissions.navigation.write);
+
   async function handleDelete(id: number) {
+    if (!canWrite) {
+      return;
+    }
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this menu?",
     );
@@ -38,9 +49,11 @@ export default function NavigationPage() {
         title="Navigation"
         description="Manage website navigation menus."
         actions={
-          <Link href={routes.createNavigation}>
-            <Button>New Menu</Button>
-          </Link>
+          canWrite ? (
+            <Link href={routes.createNavigation}>
+              <Button>New Menu</Button>
+            </Link>
+          ) : undefined
         }
       />
 
@@ -73,18 +86,22 @@ export default function NavigationPage() {
                   </Button>
                 </Link>
 
-                <Link href={routes.editNavigation(menu.id)}>
-                  <Button>Edit</Button>
-                </Link>
+                {canWrite && (
+                  <>
+                    <Link href={routes.editNavigation(menu.id)}>
+                      <Button>Edit</Button>
+                    </Link>
 
-                <Button
-                  type="button"
-                  className="bg-red-600 hover:bg-red-700"
-                  disabled={deleteMutation.isPending}
-                  onClick={() => handleDelete(menu.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                    <Button
+                      type="button"
+                      className="bg-red-600 hover:bg-red-700"
+                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(menu.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
               </div>
             ),
           },

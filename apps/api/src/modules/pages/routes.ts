@@ -4,7 +4,7 @@ import { authenticate } from "../../middlewares/authenticate";
 import { validate } from "../../middlewares/validate";
 import { PagesController } from "./controller";
 import { createPageSchema, updatePageSchema } from "./schema";
-
+import { authorize } from "../../middlewares/authorize";
 const pagesRouter = Router();
 const pagesController = new PagesController();
 
@@ -17,11 +17,22 @@ pagesRouter.get("/public/:slug", pagesController.getPublishedBySlug);
 /*
  * Protected admin endpoints
  */
-pagesRouter.get("/", authenticate, pagesController.getAll);
-pagesRouter.get("/:id", authenticate, pagesController.getById);
+pagesRouter.get(
+  "/",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  pagesController.getAll,
+);
+pagesRouter.get(
+  "/:id",
+  authenticate,
+  authorize("Admin", "Editor", "Author"),
+  pagesController.getById,
+);
 pagesRouter.post(
   "/",
   authenticate,
+  authorize("Admin", "Editor"),
   validate(createPageSchema),
   pagesController.create,
 );
@@ -29,10 +40,16 @@ pagesRouter.post(
 pagesRouter.put(
   "/:id",
   authenticate,
+  authorize("Admin", "Editor"),
   validate(updatePageSchema),
   pagesController.update,
 );
 
-pagesRouter.delete("/:id", authenticate, pagesController.delete);
+pagesRouter.delete(
+  "/:id",
+  authenticate,
+  authorize("Admin", "Editor"),
+  pagesController.delete,
+);
 
 export default pagesRouter;

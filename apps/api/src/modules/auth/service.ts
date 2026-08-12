@@ -14,6 +14,10 @@ export class AuthService {
       throw new Error("Invalid email or password");
     }
 
+    if (!user.role) {
+      throw new Error("User does not have an assigned role");
+    }
+
     const valid = await bcrypt.compare(password, user.passwordHash);
 
     if (!valid) {
@@ -24,6 +28,7 @@ export class AuthService {
       {
         userId: user.id,
         email: user.email,
+        role: user.role.name,
       },
       env.JWT_SECRET,
       {
@@ -38,6 +43,7 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        role: user.role.name,
       },
     };
   }

@@ -3,9 +3,13 @@
 import { FormEvent, useState } from "react";
 
 import { useCreateTag } from "@/hooks/use-create-tag";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDeleteTag } from "@/hooks/use-delete-tag";
 import { useTags } from "@/hooks/use-tags";
 import { useUpdateTag } from "@/hooks/use-update-tag";
+
+import { hasPermission, permissions } from "@/lib/auth/permissions";
+
 import type { Tag } from "@/services/tag.service";
 
 const TAG_TYPES = ["PRODUCT", "BLOG"];
@@ -13,9 +17,13 @@ const TAG_TYPES = ["PRODUCT", "BLOG"];
 export default function TagsPage() {
   const { data: tags = [], isLoading, isError } = useTags();
 
+  const { data: user } = useCurrentUser();
+
   const createMutation = useCreateTag();
   const updateMutation = useUpdateTag();
   const deleteMutation = useDeleteTag();
+
+  const canWrite = hasPermission(user?.role, permissions.tags.write);
 
   const [editing, setEditing] = useState<Tag | null>(null);
 
@@ -33,6 +41,10 @@ export default function TagsPage() {
   }
 
   function startEdit(tag: Tag) {
+    if (!canWrite) {
+      return;
+    }
+
     setEditing(tag);
     setName(tag.name);
     setSlug(tag.slug);
@@ -42,6 +54,10 @@ export default function TagsPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!canWrite) {
+      return;
+    }
 
     const data = {
       name,
@@ -63,6 +79,10 @@ export default function TagsPage() {
   }
 
   async function handleDelete(tag: Tag) {
+    if (!canWrite) {
+      return;
+    }
+
     const confirmed = window.confirm(`Delete tag "${tag.name}"?`);
 
     if (!confirmed) {
@@ -96,68 +116,81 @@ export default function TagsPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-5">
-        <h2 className="font-semibold">{editing ? "Edit tag" : "Create tag"}</h2>
+      {canWrite && (
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-lg border p-5"
+        >
+          <h2 className="font-semibold">
+            {editing ? "Edit tag" : "Create tag"}
+          </h2>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Name"
-            required
-            className="rounded-md border px-3 py-2"
-          />
-
-          <input
-            value={slug}
-            onChange={(event) => setSlug(event.target.value)}
-            placeholder="Slug"
-            required
-            className="rounded-md border px-3 py-2"
-          />
-
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-            className="rounded-md border px-3 py-2"
-          >
-            {TAG_TYPES.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-
-          <label className="flex items-center gap-2">
+          <div className="grid gap-4 md:grid-cols-2">
             <input
-              type="checkbox"
-              checked={isActive}
-              onChange={(event) => setIsActive(event.target.checked)}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Name"
+              required
+              className="rounded-md border px-3 py-2"
             />
-            Active
-          </label>
-        </div>
 
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
-          >
-            {isSaving ? "Saving..." : editing ? "Update tag" : "Create tag"}
-          </button>
+            <input
+              value={slug}
+              onChange={(event) => setSlug(event.target.value)}
+              placeholder="Slug"
+              required
+              className="rounded-md border px-3 py-2"
+            />
 
-          {editing && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="rounded-md border px-4 py-2 text-sm"
+            <select
+              value={type}
+              onChange={(event) => setType(event.target.value)}
+              className="rounded-md border px-3 py-2"
             >
-              Cancel
+              {TAG_TYPES.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(event) => setIsActive(event.target.checked)}
+              />
+              Active
+            </label>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
+            >
+              {isSaving ? "Saving..." : editing ? "Update tag" : "Create tag"}
             </button>
-          )}
+
+            {editing && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="rounded-md border px-4 py-2 text-sm"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+
+      {!canWrite && (
+        <div className="rounded-lg border bg-gray-50 p-4 text-sm text-gray-500">
+          You have read-only access to tags.
         </div>
-      </form>
+      )}
 
       <div className="overflow-hidden rounded-lg border">
         <table className="w-full text-left text-sm">
@@ -183,24 +216,28 @@ export default function TagsPage() {
                 <td className="p-3">{tag.isActive ? "Active" : "Inactive"}</td>
 
                 <td className="p-3">
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(tag)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      Edit
-                    </button>
+                  {canWrite ? (
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => startEdit(tag)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(tag)}
-                      disabled={deleteMutation.isPending}
-                      className="text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(tag)}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">Read only</span>
+                  )}
                 </td>
               </tr>
             ))}

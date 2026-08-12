@@ -19,7 +19,11 @@ const defaultValues: GeneralSettings = {
   faviconMediaId: null,
 };
 
-export function GeneralSettingsForm() {
+type Props = {
+  readOnly?: boolean;
+};
+
+export function GeneralSettingsForm({ readOnly = false }: Props) {
   const { data: setting, isLoading } = useSettings("general");
 
   const updateMutation = useUpdateSettings("general");
@@ -44,6 +48,10 @@ export function GeneralSettingsForm() {
   }, [setting, reset]);
 
   async function submit(data: GeneralSettings) {
+    if (readOnly) {
+      return;
+    }
+
     setFormError(null);
     setSuccessMessage(null);
 
@@ -91,6 +99,7 @@ export function GeneralSettingsForm() {
 
         <TextField
           label="Site Name"
+          disabled={readOnly}
           error={errors.siteName?.message}
           {...register("siteName", {
             required: "Site name is required",
@@ -99,6 +108,7 @@ export function GeneralSettingsForm() {
 
         <TextField
           label="Site Description"
+          disabled={readOnly}
           error={errors.siteDescription?.message}
           {...register("siteDescription")}
         />
@@ -106,6 +116,7 @@ export function GeneralSettingsForm() {
         <TextField
           label="Logo Media ID"
           type="number"
+          disabled={readOnly}
           error={errors.logoMediaId?.message}
           {...register("logoMediaId", {
             setValueAs: (value) =>
@@ -116,6 +127,7 @@ export function GeneralSettingsForm() {
         <TextField
           label="Favicon Media ID"
           type="number"
+          disabled={readOnly}
           error={errors.faviconMediaId?.message}
           {...register("faviconMediaId", {
             setValueAs: (value) =>
@@ -123,9 +135,11 @@ export function GeneralSettingsForm() {
           })}
         />
 
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {updateMutation.isPending ? "Saving..." : "Save General Settings"}
-        </Button>
+        {!readOnly && (
+          <Button type="submit" disabled={updateMutation.isPending}>
+            {updateMutation.isPending ? "Saving..." : "Save General Settings"}
+          </Button>
+        )}
       </form>
     </Card>
   );

@@ -12,6 +12,7 @@ import { DataTable } from "@/components/tables/data-table";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
 
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useMenu } from "@/hooks/use-navigation";
 
 import {
@@ -21,6 +22,8 @@ import {
   useUpdateMenuItem,
 } from "@/hooks/use-navigation-items";
 
+import { hasPermission, permissions } from "@/lib/auth/permissions";
+
 import type { CreateMenuItemRequest, MenuItem } from "@/types/navigation";
 
 export default function NavigationItemsPage() {
@@ -28,7 +31,12 @@ export default function NavigationItemsPage() {
 
   const menuId = Number(params.id);
 
+  const { data: user } = useCurrentUser();
+
+  const canWrite = hasPermission(user?.role, permissions.navigation.write);
+
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+
   const [formError, setFormError] = useState<string | null>(null);
 
   const { data: menu, isLoading: isMenuLoading } = useMenu(menuId);
@@ -42,6 +50,10 @@ export default function NavigationItemsPage() {
   const deleteMutation = useDeleteMenuItem(menuId);
 
   async function handleSubmit(data: CreateMenuItemRequest) {
+    if (!canWrite) {
+      return;
+    }
+
     setFormError(null);
 
     try {
@@ -71,6 +83,10 @@ export default function NavigationItemsPage() {
   }
 
   async function handleDelete(item: MenuItem) {
+    if (!canWrite) {
+      return;
+    }
+
     const confirmed = window.confirm(
       `Are you sure you want to delete "${item.title}"?`,
     );
@@ -102,24 +118,31 @@ export default function NavigationItemsPage() {
       />
 
       <div className="space-y-6">
-        {formError && (
+        {formError && canWrite && (
           <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">
             {formError}
           </div>
         )}
-        <MenuItemForm
-          key={
-            editingItem ? `edit-${editingItem.id}` : `create-${items.length}`
-          }
-          items={items}
-          editingItem={editingItem}
-          isSubmitting={createMutation.isPending || updateMutation.isPending}
-          onSubmit={handleSubmit}
-          onCancelEdit={() => {
-            setFormError(null);
-            setEditingItem(null);
-          }}
-        />
+
+        {canWrite ? (
+          <MenuItemForm
+            key={
+              editingItem ? `edit-${editingItem.id}` : `create-${items.length}`
+            }
+            items={items}
+            editingItem={editingItem}
+            isSubmitting={createMutation.isPending || updateMutation.isPending}
+            onSubmit={handleSubmit}
+            onCancelEdit={() => {
+              setFormError(null);
+              setEditingItem(null);
+            }}
+          />
+        ) : (
+          <div className="rounded-lg border bg-gray-50 p-4 text-sm text-gray-500">
+            You have read-only access to navigation items.
+          </div>
+        )}
 
         <DataTable
           rows={items}
@@ -163,28 +186,36 @@ export default function NavigationItemsPage() {
             {
               key: "actions",
               title: "Actions",
-              render: (item) => (
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setFormError(null);
-                      setEditingItem(item);
-                    }}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+              render: (item) => {
+                if (!canWrite) {
+                  return (
+                    <span className="text-sm text-gray-400">Read only</span>
+                  );
+                }
 
-                  <Button
-                    type="button"
-                    className="bg-red-600 hover:bg-red-700"
-                    disabled={deleteMutation.isPending}
-                    onClick={() => handleDelete(item)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ),
+                return (
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setFormError(null);
+                        setEditingItem(item);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+
+                    <Button
+                      type="button"
+                      className="bg-red-600 hover:bg-red-700"
+                      disabled={deleteMutation.isPending}
+                      onClick={() => handleDelete(item)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                );
+              },
             },
           ]}
         />

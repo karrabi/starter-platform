@@ -3,6 +3,7 @@ export interface UserDto {
   firstName: string;
   lastName: string;
   email: string;
+  role: string;
 }
 
 export interface LoginRequest {
@@ -19,4 +20,16 @@ export interface LoginResponse {
   success: boolean;
   message: string;
   data: LoginData;
+}
+
+export interface CurrentUser {
+  userId: number;
+  email: string;
+  role: string;
+}
+
+export interface CurrentUserResponse {
+  success: boolean;
+  message: string;
+  data: CurrentUser;
 }

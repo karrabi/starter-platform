@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { PageHeader } from "@/components/layout/page-header";
 import { UserForm } from "@/components/user/user-form";
 import { PageContainer } from "@/components/ui/page-container";
@@ -9,6 +10,8 @@ import { PageContainer } from "@/components/ui/page-container";
 import { routes } from "@/config/routes";
 
 import { useCreateUser, useRoles } from "@/hooks/use-users";
+
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreateUserRequest, UpdateUserRequest } from "@/types/user";
 
@@ -30,18 +33,20 @@ export default function CreateUserPage() {
   }
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Create User"
-        description="Create a new administrator user."
-      />
+    <PermissionGuard allowedRoles={permissions.users.write}>
+      <PageContainer>
+        <PageHeader
+          title="Create User"
+          description="Create a new administrator user."
+        />
 
-      <UserForm
-        mode="create"
-        roles={roles}
-        isSubmitting={createMutation.isPending}
-        onSubmit={handleSubmit}
-      />
-    </PageContainer>
+        <UserForm
+          mode="create"
+          roles={roles}
+          isSubmitting={createMutation.isPending}
+          onSubmit={handleSubmit}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

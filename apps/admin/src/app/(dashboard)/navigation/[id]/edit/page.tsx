@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { PageHeader } from "@/components/layout/page-header";
 import { MenuForm } from "@/components/navigation/menu-form";
 import { PageContainer } from "@/components/ui/page-container";
@@ -9,6 +10,8 @@ import { PageContainer } from "@/components/ui/page-container";
 import { routes } from "@/config/routes";
 
 import { useMenu, useUpdateMenu } from "@/hooks/use-navigation";
+
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreateMenuRequest } from "@/types/navigation";
 
@@ -40,18 +43,20 @@ export default function EditNavigationPage() {
   }
 
   return (
-    <PageContainer>
-      <PageHeader title="Edit Menu" description="Update navigation menu." />
+    <PermissionGuard allowedRoles={permissions.navigation.write}>
+      <PageContainer>
+        <PageHeader title="Edit Menu" description="Update navigation menu." />
 
-      <MenuForm
-        mode="edit"
-        isSubmitting={updateMutation.isPending}
-        onSubmit={handleUpdate}
-        initialValues={{
-          name: menu.name,
-          description: menu.description ?? "",
-        }}
-      />
-    </PageContainer>
+        <MenuForm
+          mode="edit"
+          isSubmitting={updateMutation.isPending}
+          onSubmit={handleUpdate}
+          initialValues={{
+            name: menu.name,
+            description: menu.description ?? "",
+          }}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

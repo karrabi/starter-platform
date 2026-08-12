@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProductForm } from "@/components/product/product-form";
 import { PageContainer } from "@/components/ui/page-container";
@@ -10,6 +11,8 @@ import { routes } from "@/config/routes";
 
 import { useProduct } from "@/hooks/use-product";
 import { useUpdateProduct } from "@/hooks/use-update-product";
+
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreateProductRequest } from "@/types/product";
 
@@ -51,44 +54,49 @@ export default function EditProductPage() {
   const seoOgImageId = typeof seo.ogImageId === "number" ? seo.ogImageId : null;
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Edit Product"
-        description="Update product information."
-      />
+    <PermissionGuard allowedRoles={permissions.products.write}>
+      <PageContainer>
+        <PageHeader
+          title="Edit Product"
+          description="Update product information."
+        />
 
-      <ProductForm
-        mode="edit"
-        isSubmitting={updateMutation.isPending}
-        initialValues={{
-          name: product.name,
-          slug: product.slug,
-          shortDescription: product.shortDescription ?? "",
-          description:
-            typeof product.description === "object"
-              ? ((product.description as any).body ?? "")
-              : "",
-          status: product.status,
-          featured: product.featured,
+        <ProductForm
+          mode="edit"
+          isSubmitting={updateMutation.isPending}
+          initialValues={{
+            name: product.name,
+            slug: product.slug,
+            shortDescription: product.shortDescription ?? "",
+            description:
+              typeof product.description === "object"
+                ? ((product.description as any).body ?? "")
+                : "",
+            status: product.status,
+            featured: product.featured,
 
-          gallery: Array.isArray(product.media)
-            ? product.media
-                .slice()
-                .sort((a, b) => a.position - b.position)
-                .map((item) => item.mediaId)
-            : [],
-          categoryIds: Array.isArray(product.categories)
-            ? product.categories.map((item) => item.categoryId)
-            : [],
-          tagIds: Array.isArray(product.tags)
-            ? product.tags.map((item) => item.tagId)
-            : [],
-          seoTitle,
-          seoDescription,
-          seoOgImageId,
-        }}
-        onSubmit={handleUpdate}
-      />
-    </PageContainer>
+            gallery: Array.isArray(product.media)
+              ? product.media
+                  .slice()
+                  .sort((a, b) => a.position - b.position)
+                  .map((item) => item.mediaId)
+              : [],
+
+            categoryIds: Array.isArray(product.categories)
+              ? product.categories.map((item) => item.categoryId)
+              : [],
+
+            tagIds: Array.isArray(product.tags)
+              ? product.tags.map((item) => item.tagId)
+              : [],
+
+            seoTitle,
+            seoDescription,
+            seoOgImageId,
+          }}
+          onSubmit={handleUpdate}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

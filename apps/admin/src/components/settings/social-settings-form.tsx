@@ -20,7 +20,11 @@ const defaultValues: SocialSettings = {
   youtube: "",
 };
 
-export function SocialSettingsForm() {
+type Props = {
+  readOnly?: boolean;
+};
+
+export function SocialSettingsForm({ readOnly = false }: Props) {
   const { data: setting, isLoading } = useSettings("social");
 
   const updateMutation = useUpdateSettings("social");
@@ -29,12 +33,7 @@ export function SocialSettingsForm() {
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<SocialSettings>({
+  const { register, handleSubmit, reset } = useForm<SocialSettings>({
     defaultValues,
   });
 
@@ -45,6 +44,10 @@ export function SocialSettingsForm() {
   }, [setting, reset]);
 
   async function submit(data: SocialSettings) {
+    if (readOnly) {
+      return;
+    }
+
     setFormError(null);
     setSuccessMessage(null);
 
@@ -93,19 +96,37 @@ export function SocialSettingsForm() {
           </div>
         )}
 
-        <TextField label="Facebook" {...register("facebook")} />
+        <TextField
+          label="Facebook"
+          disabled={readOnly}
+          {...register("facebook")}
+        />
 
-        <TextField label="Instagram" {...register("instagram")} />
+        <TextField
+          label="Instagram"
+          disabled={readOnly}
+          {...register("instagram")}
+        />
 
-        <TextField label="LinkedIn" {...register("linkedin")} />
+        <TextField
+          label="LinkedIn"
+          disabled={readOnly}
+          {...register("linkedin")}
+        />
 
-        <TextField label="X" {...register("x")} />
+        <TextField label="X" disabled={readOnly} {...register("x")} />
 
-        <TextField label="YouTube" {...register("youtube")} />
+        <TextField
+          label="YouTube"
+          disabled={readOnly}
+          {...register("youtube")}
+        />
 
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {updateMutation.isPending ? "Saving..." : "Save Social Settings"}
-        </Button>
+        {!readOnly && (
+          <Button type="submit" disabled={updateMutation.isPending}>
+            {updateMutation.isPending ? "Saving..." : "Save Social Settings"}
+          </Button>
+        )}
       </form>
     </Card>
   );

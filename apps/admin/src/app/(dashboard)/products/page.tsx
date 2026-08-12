@@ -1,33 +1,38 @@
 "use client";
 
 import Link from "next/link";
-
-import { useProducts } from "@/hooks/use-products";
+import { Trash2 } from "lucide-react";
 
 import { DataTable } from "@/components/tables/data-table";
-
+import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
 
-import { PageHeader } from "@/components/layout/page-header";
-
 import { routes } from "@/config/routes";
 
-import { Trash2 } from "lucide-react";
-
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDeleteProduct } from "@/hooks/use-delete-product";
+import { useProducts } from "@/hooks/use-products";
 
-import { config } from "@/config/config";
+import { hasPermission, permissions } from "@/lib/auth/permissions";
 
 export default function ProductsPage() {
   const { data = [], isLoading } = useProducts();
+  const { data: user } = useCurrentUser();
+
   const deleteMutation = useDeleteProduct();
+
+  const canWrite = hasPermission(user?.role, permissions.products.write);
 
   if (isLoading) {
     return <PageContainer>Loading...</PageContainer>;
   }
 
   async function handleDelete(id: number) {
+    if (!canWrite) {
+      return;
+    }
+
     const confirmed = window.confirm(
       "Are you sure you want to delete this product?",
     );
@@ -45,9 +50,11 @@ export default function ProductsPage() {
         title="Products"
         description="Manage all products."
         actions={
-          <Link href={routes.createProduct}>
-            <Button>New Product</Button>
-          </Link>
+          canWrite ? (
+            <Link href={routes.createProduct}>
+              <Button>New Product</Button>
+            </Link>
+          ) : undefined
         }
       />
 
@@ -70,7 +77,10 @@ export default function ProductsPage() {
 
               return (
                 <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api$/, "")}${featuredMedia.media.path}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL?.replace(
+                    /\/api$/,
+                    "",
+                  )}${featuredMedia.media.path}`}
                   alt={product.name}
                   className="h-14 w-14 rounded-lg border object-contain"
                 />
@@ -92,22 +102,28 @@ export default function ProductsPage() {
           {
             key: "actions",
             title: "Actions",
-            render: (product) => (
-              <div className="flex gap-2">
-                <Link href={`/products/${product.id}/edit`}>
-                  <Button>Edit</Button>
-                </Link>
+            render: (product) => {
+              if (!canWrite) {
+                return <span className="text-sm text-gray-400">Read only</span>;
+              }
 
-                <Button
-                  type="button"
-                  className="bg-red-600 hover:bg-red-700"
-                  disabled={deleteMutation.isPending}
-                  onClick={() => handleDelete(product.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ),
+              return (
+                <div className="flex gap-2">
+                  <Link href={`/products/${product.id}/edit`}>
+                    <Button>Edit</Button>
+                  </Link>
+
+                  <Button
+                    type="button"
+                    className="bg-red-600 hover:bg-red-700"
+                    disabled={deleteMutation.isPending}
+                    onClick={() => handleDelete(product.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+            },
           },
         ]}
       />

@@ -4,8 +4,12 @@ import { FormEvent, useState } from "react";
 
 import { useCategories } from "@/hooks/use-categories";
 import { useCreateCategory } from "@/hooks/use-create-category";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDeleteCategory } from "@/hooks/use-delete-category";
 import { useUpdateCategory } from "@/hooks/use-update-category";
+
+import { hasPermission, permissions } from "@/lib/auth/permissions";
+
 import type { Category } from "@/services/category.service";
 
 const CATEGORY_TYPES = ["PRODUCT", "BLOG"];
@@ -13,9 +17,13 @@ const CATEGORY_TYPES = ["PRODUCT", "BLOG"];
 export default function CategoriesPage() {
   const { data: categories = [], isLoading, isError } = useCategories();
 
+  const { data: user } = useCurrentUser();
+
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory();
   const deleteMutation = useDeleteCategory();
+
+  const canWrite = hasPermission(user?.role, permissions.categories.write);
 
   const [editing, setEditing] = useState<Category | null>(null);
 
@@ -39,6 +47,10 @@ export default function CategoriesPage() {
   }
 
   function startEdit(category: Category) {
+    if (!canWrite) {
+      return;
+    }
+
     setEditing(category);
     setName(category.name);
     setSlug(category.slug);
@@ -51,6 +63,10 @@ export default function CategoriesPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!canWrite) {
+      return;
+    }
 
     const data = {
       name,
@@ -75,6 +91,10 @@ export default function CategoriesPage() {
   }
 
   async function handleDelete(category: Category) {
+    if (!canWrite) {
+      return;
+    }
+
     const confirmed = window.confirm(`Delete category "${category.name}"?`);
 
     if (!confirmed) {
@@ -108,113 +128,124 @@ export default function CategoriesPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-5">
-        <h2 className="font-semibold">
-          {editing ? "Edit category" : "Create category"}
-        </h2>
+      {canWrite && (
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-lg border p-5"
+        >
+          <h2 className="font-semibold">
+            {editing ? "Edit category" : "Create category"}
+          </h2>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <input
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Name"
-            required
-            className="rounded-md border px-3 py-2"
-          />
+          <div className="grid gap-4 md:grid-cols-2">
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Name"
+              required
+              className="rounded-md border px-3 py-2"
+            />
 
-          <input
-            value={slug}
-            onChange={(event) => setSlug(event.target.value)}
-            placeholder="Slug"
-            required
-            className="rounded-md border px-3 py-2"
-          />
+            <input
+              value={slug}
+              onChange={(event) => setSlug(event.target.value)}
+              placeholder="Slug"
+              required
+              className="rounded-md border px-3 py-2"
+            />
 
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-            className="rounded-md border px-3 py-2"
-          >
-            {CATEGORY_TYPES.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={parentId ?? ""}
-            onChange={(event) =>
-              setParentId(
-                event.target.value ? Number(event.target.value) : null,
-              )
-            }
-            className="rounded-md border px-3 py-2"
-          >
-            <option value="">No parent</option>
-
-            {categories
-              .filter(
-                (category) =>
-                  category.type === type && category.id !== editing?.id,
-              )
-              .map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
+            <select
+              value={type}
+              onChange={(event) => setType(event.target.value)}
+              className="rounded-md border px-3 py-2"
+            >
+              {CATEGORY_TYPES.map((item) => (
+                <option key={item} value={item}>
+                  {item}
                 </option>
               ))}
-          </select>
+            </select>
 
-          <input
-            type="number"
-            value={sortOrder}
-            onChange={(event) => setSortOrder(Number(event.target.value))}
-            placeholder="Sort order"
-            className="rounded-md border px-3 py-2"
-          />
-        </div>
-
-        <textarea
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          placeholder="Description"
-          rows={3}
-          className="w-full rounded-md border px-3 py-2"
-        />
-
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={(event) => setIsActive(event.target.checked)}
-          />
-          Active
-        </label>
-
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
-          >
-            {isSaving
-              ? "Saving..."
-              : editing
-                ? "Update category"
-                : "Create category"}
-          </button>
-
-          {editing && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="rounded-md border px-4 py-2 text-sm"
+            <select
+              value={parentId ?? ""}
+              onChange={(event) =>
+                setParentId(
+                  event.target.value ? Number(event.target.value) : null,
+                )
+              }
+              className="rounded-md border px-3 py-2"
             >
-              Cancel
+              <option value="">No parent</option>
+
+              {categories
+                .filter(
+                  (category) =>
+                    category.type === type && category.id !== editing?.id,
+                )
+                .map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+            </select>
+
+            <input
+              type="number"
+              value={sortOrder}
+              onChange={(event) => setSortOrder(Number(event.target.value))}
+              placeholder="Sort order"
+              className="rounded-md border px-3 py-2"
+            />
+          </div>
+
+          <textarea
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            placeholder="Description"
+            rows={3}
+            className="w-full rounded-md border px-3 py-2"
+          />
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={(event) => setIsActive(event.target.checked)}
+            />
+            Active
+          </label>
+
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
+            >
+              {isSaving
+                ? "Saving..."
+                : editing
+                  ? "Update category"
+                  : "Create category"}
             </button>
-          )}
+
+            {editing && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="rounded-md border px-4 py-2 text-sm"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+
+      {!canWrite && (
+        <div className="rounded-lg border bg-gray-50 p-4 text-sm text-gray-500">
+          You have read-only access to categories.
         </div>
-      </form>
+      )}
 
       <div className="overflow-hidden rounded-lg border">
         <table className="w-full text-left text-sm">
@@ -253,24 +284,28 @@ export default function CategoriesPage() {
                 </td>
 
                 <td className="p-3">
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(category)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      Edit
-                    </button>
+                  {canWrite ? (
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => startEdit(category)}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </button>
 
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(category)}
-                      disabled={deleteMutation.isPending}
-                      className="text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Delete
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(category)}
+                        disabled={deleteMutation.isPending}
+                        className="text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">Read only</span>
+                  )}
                 </td>
               </tr>
             ))}

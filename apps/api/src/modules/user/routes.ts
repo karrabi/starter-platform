@@ -6,12 +6,14 @@ import { authenticate } from "../../middlewares/authenticate";
 import { validate } from "../../middlewares/validate";
 
 import { createUserSchema, updateUserSchema } from "./schema";
+import { authorize } from "../../middlewares/authorize";
 
 const userRouter = Router();
 
 const userController = new UserController();
 
 userRouter.use(authenticate);
+userRouter.use(authorize("Admin"));
 
 userRouter.get("/", userController.getAll);
 

@@ -8,7 +8,7 @@ http:
   url: "{{BASE_URL}}/api/roles"
   headers:
     - name: Authorization
-      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJpYXQiOjE3ODU4MzM4MzEsImV4cCI6MTc4NjQzODYzMX0.elBhmdtLQ5xGGoz715bGeLGWqJFX0uqAMuOlbnvkows
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3ODY1MjEyOTMsImV4cCI6MTc4NzEyNjA5M30.w4vyC9q4QrYNoitzQRv6QSF1Qxkggcb9RJuFKXnMe9I
   auth: inherit
 
 settings:

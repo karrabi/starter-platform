@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageForm } from "@/components/page/page-form";
 import { PageContainer } from "@/components/ui/page-container";
@@ -10,6 +11,8 @@ import { routes } from "@/config/routes";
 
 import { usePage } from "@/hooks/use-page";
 import { useUpdatePage } from "@/hooks/use-update-page";
+
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreatePageRequest, UpdatePageRequest } from "@/types/page";
 
@@ -59,23 +62,25 @@ export default function EditPagePage() {
   const seoOgImageId = typeof seo.ogImageId === "number" ? seo.ogImageId : null;
 
   return (
-    <PageContainer>
-      <PageHeader title="Edit Page" description="Update website page." />
+    <PermissionGuard allowedRoles={permissions.pages.write}>
+      <PageContainer>
+        <PageHeader title="Edit Page" description="Update website page." />
 
-      <PageForm
-        mode="edit"
-        isSubmitting={updateMutation.isPending}
-        onSubmit={handleUpdate}
-        initialValues={{
-          title: page.title,
-          slug: page.slug,
-          content,
-          status: page.status,
-          seoTitle,
-          seoDescription,
-          seoOgImageId,
-        }}
-      />
-    </PageContainer>
+        <PageForm
+          mode="edit"
+          isSubmitting={updateMutation.isPending}
+          onSubmit={handleUpdate}
+          initialValues={{
+            title: page.title,
+            slug: page.slug,
+            content,
+            status: page.status,
+            seoTitle,
+            seoDescription,
+            seoOgImageId,
+          }}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

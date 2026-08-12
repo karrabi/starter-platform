@@ -2,18 +2,22 @@
 
 import { useRouter } from "next/navigation";
 
+import { PermissionGuard } from "@/components/auth/permission-guard";
 import { BlogForm } from "@/components/blog/blog-form";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageContainer } from "@/components/ui/page-container";
 
+import { routes } from "@/config/routes";
+
 import { useCreateBlog } from "@/hooks/use-create-blog";
 
-import { routes } from "@/config/routes";
+import { permissions } from "@/lib/auth/permissions";
 
 import type { CreateBlogRequest } from "@/types/blog";
 
 export default function CreateBlogPage() {
   const router = useRouter();
+
   const createMutation = useCreateBlog();
 
   async function handleCreate(data: CreateBlogRequest) {
@@ -23,14 +27,16 @@ export default function CreateBlogPage() {
   }
 
   return (
-    <PageContainer>
-      <PageHeader title="Create Blog" description="Create a new blog post." />
+    <PermissionGuard allowedRoles={permissions.blog.write}>
+      <PageContainer>
+        <PageHeader title="Create Blog" description="Create a new blog post." />
 
-      <BlogForm
-        mode="create"
-        isSubmitting={createMutation.isPending}
-        onSubmit={handleCreate}
-      />
-    </PageContainer>
+        <BlogForm
+          mode="create"
+          isSubmitting={createMutation.isPending}
+          onSubmit={handleCreate}
+        />
+      </PageContainer>
+    </PermissionGuard>
   );
 }

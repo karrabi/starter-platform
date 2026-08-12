@@ -19,7 +19,11 @@ const defaultValues: SeoSettings = {
   defaultOgImageId: null,
 };
 
-export function SeoSettingsForm() {
+type Props = {
+  readOnly?: boolean;
+};
+
+export function SeoSettingsForm({ readOnly = false }: Props) {
   const { data: setting, isLoading } = useSettings("seo");
 
   const updateMutation = useUpdateSettings("seo");
@@ -44,6 +48,10 @@ export function SeoSettingsForm() {
   }, [setting, reset]);
 
   async function submit(data: SeoSettings) {
+    if (readOnly) {
+      return;
+    }
+
     setFormError(null);
     setSuccessMessage(null);
 
@@ -94,18 +102,21 @@ export function SeoSettingsForm() {
 
         <TextField
           label="Default Title"
+          disabled={readOnly}
           error={errors.defaultTitle?.message}
           {...register("defaultTitle")}
         />
 
         <TextField
           label="Title Template"
+          disabled={readOnly}
           error={errors.titleTemplate?.message}
           {...register("titleTemplate")}
         />
 
         <TextField
           label="Default Description"
+          disabled={readOnly}
           error={errors.defaultDescription?.message}
           {...register("defaultDescription")}
         />
@@ -113,6 +124,7 @@ export function SeoSettingsForm() {
         <TextField
           label="Default OG Image Media ID"
           type="number"
+          disabled={readOnly}
           error={errors.defaultOgImageId?.message}
           {...register("defaultOgImageId", {
             setValueAs: (value) =>
@@ -120,9 +132,11 @@ export function SeoSettingsForm() {
           })}
         />
 
-        <Button type="submit" disabled={updateMutation.isPending}>
-          {updateMutation.isPending ? "Saving..." : "Save SEO Settings"}
-        </Button>
+        {!readOnly && (
+          <Button type="submit" disabled={updateMutation.isPending}>
+            {updateMutation.isPending ? "Saving..." : "Save SEO Settings"}
+          </Button>
+        )}
       </form>
     </Card>
   );
