@@ -1,19 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import { ZodSchema } from "zod";
+import type { NextFunction, Request, Response } from "express";
+import type { ZodSchema } from "zod";
 
-import { ApiResponse } from "../utils/response";
+import { AppError } from "../utils/app-error";
 
 export const validate =
   (schema: ZodSchema) =>
-  (req: Request, res: Response, next: NextFunction): void => {
+  (req: Request, _res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
-      ApiResponse.error(
-        res,
-        result.error.issues.map((i) => i.message).join(", "),
-        400
-      );
+      const message = result.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+
+      next(new AppError(message, 400));
       return;
     }
 

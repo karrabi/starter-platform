@@ -22,6 +22,7 @@ export type BlogSeo = {
   title?: string;
   description?: string;
   keywords?: string[];
+  ogImageId?: number | null;
 };
 
 export type BlogContent = {

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getBlogBySlug } from "@/services/blog.service";
-
+import { getMediaUrl } from "@/lib/media";
 import { getSiteUrl } from "@/lib/site-url";
+
+import { getBlogBySlug } from "@/services/blog.service";
+import { getMediaById } from "@/services/media.service";
 
 type Props = {
   params: Promise<{
@@ -16,7 +18,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const blog = await getBlogBySlug(slug);
+
     const url = getSiteUrl(`/blog/${slug}`);
+
+    let ogImageUrl: string | null = null;
+
+    if (blog.seo?.ogImageId) {
+      try {
+        const media = await getMediaById(blog.seo.ogImageId);
+        ogImageUrl = getMediaUrl(media.path);
+      } catch {
+        ogImageUrl = null;
+      }
+    }
 
     return {
       title: blog.seo?.title || blog.title,
@@ -40,12 +54,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
               publishedTime: blog.publishedAt,
             }
           : {}),
+
+        ...(ogImageUrl
+          ? {
+              images: [
+                {
+                  url: ogImageUrl,
+                },
+              ],
+            }
+          : {}),
       },
 
       twitter: {
         card: "summary_large_image",
         title: blog.seo?.title || blog.title,
         description: blog.seo?.description || undefined,
+
+        ...(ogImageUrl
+          ? {
+              images: [ogImageUrl],
+            }
+          : {}),
       },
     };
   } catch {

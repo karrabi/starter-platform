@@ -8,6 +8,7 @@ export type PageSeo = {
   title?: string;
   description?: string;
   keywords?: string[];
+  ogImageId?: number | null;
 };
 
 export type PublicPage = {

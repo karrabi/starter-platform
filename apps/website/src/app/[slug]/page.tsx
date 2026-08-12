@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getPageBySlug } from "@/services/page.service";
-
+import { getMediaUrl } from "@/lib/media";
 import { getSiteUrl } from "@/lib/site-url";
+
+import { getMediaById } from "@/services/media.service";
+import { getPageBySlug } from "@/services/page.service";
 
 type Props = {
   params: Promise<{
@@ -18,6 +20,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const page = await getPageBySlug(slug);
 
     const url = getSiteUrl(`/${slug}`);
+
+    let ogImageUrl: string | null = null;
+
+    if (page.seo?.ogImageId) {
+      try {
+        const media = await getMediaById(page.seo.ogImageId);
+        ogImageUrl = getMediaUrl(media.path);
+      } catch {
+        ogImageUrl = null;
+      }
+    }
 
     return {
       title: page.seo?.title || page.title,
@@ -35,12 +48,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         url,
         title: page.seo?.title || page.title,
         description: page.seo?.description || undefined,
+
+        ...(ogImageUrl
+          ? {
+              images: [
+                {
+                  url: ogImageUrl,
+                },
+              ],
+            }
+          : {}),
       },
 
       twitter: {
         card: "summary_large_image",
         title: page.seo?.title || page.title,
         description: page.seo?.description || undefined,
+
+        ...(ogImageUrl
+          ? {
+              images: [ogImageUrl],
+            }
+          : {}),
       },
     };
   } catch {
