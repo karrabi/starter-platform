@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
 :root {
+  --primary: #3d4ff5;
+  --primary-dark: #2737d9;
+  --navy: #101828;
+  --accent: #ffbd16;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  --surface-soft: #f6f7f9;
+  --surface-blue: #edf1ff;
+
+  --foreground: #111827;
+  --text-muted: #667085;
+  --border: #e5e7eb;
+
+  --container-width: 1120px;
+  --section-spacing: 80px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-navy: var(--navy);
+  --color-accent: var(--accent);
+
+  --color-surface: var(--surface);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-blue: var(--surface-blue);
+
+  --color-muted: var(--text-muted);
+  --color-border: var(--border);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
+  margin: 0;
+  overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container-site {
+  width: min(calc(100% - 32px), var(--container-width));
+  margin-inline: auto;
+}
+
+.section-spacing {
+  padding-block: var(--section-spacing);
+}
+
+.hero-grid {
+  background-color: var(--primary);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+.footer-pattern {
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 45%,
+      white 45%,
+      white 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 45%,
+      white 45%,
+      white 50%,
+      transparent 50%
+    );
+  background-size: 30px 30px;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --section-spacing: 56px;
+  }
+
+  .container-site {
+    width: min(calc(100% - 28px), var(--container-width));
+  }
+
+  .hero-grid {
+    background-size: 44px 44px;
+  }
 }
